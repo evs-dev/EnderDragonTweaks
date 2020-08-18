@@ -1,5 +1,5 @@
 <center>
-<img style="width: 150px" alt="logo" src="https://raw.githubusercontent.com/evs-dev/EnderDragonTweaks/master/logo.png" />
+![logo](https://raw.githubusercontent.com/evs-dev/EnderDragonTweaks/master/logo.png | width=150)
 </center>
 
 EnderDragonTweaks improves the defeating of the Ender Dragon, especially in multiplayer. All features can be enabled/disabled individually and are highly configurable.
