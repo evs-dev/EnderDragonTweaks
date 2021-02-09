@@ -35,7 +35,7 @@ enable-defeat-announcement: true
 # DEFAULT: 128
 max-player-distance-from-end-center: 128
 
-# The number of experience points to give each player in the End upon Dragon death
+# The number of experience points to give each fight participant upon Dragon death
 # DEFAULT: 12000 (68 levels)
 xp-points-per-player: 12000
 
