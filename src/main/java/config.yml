@@ -1,5 +1,6 @@
 # EnderDragonTweaks - Ender Dragon tweaks, mainly for SMP servers
 # by EvsDev (https://github.com/evs-dev)
+# and tweaked by HeathFX
 # CONFIGURATION FILE
 
 # Is the plugin enabled? Should the Dragon death event be registered?
@@ -30,7 +31,7 @@ enable-defeat-announcement: true
 # |        Settings        |
 # |------------------------|
 
-# The distance (in blocks) of a player from the center of the end 0, 0, 0 to be counted as a participant in the fight
+# The radius (in blocks) from the center of the end island where players will be counted as dragon fight participants
 # DEFAULT: 128
 max-player-distance-from-end-center: 128
 

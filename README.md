@@ -20,7 +20,8 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
 
 ```yaml
 # EnderDragonTweaks - Ender Dragon tweaks, mainly for SMP servers
-# by EvsDev (https://github.com/evs-dev/EnderDragonTweaks)
+# by EvsDev (https://github.com/evs-dev)
+# and tweaked by HeathFX
 # CONFIGURATION FILE
 
 # Is the plugin enabled? Should the Dragon death event be registered?
@@ -50,6 +51,10 @@ enable-defeat-announcement: true
 # |------------------------|
 # |        Settings        |
 # |------------------------|
+
+# The radius (in blocks) from the center of the end island where players will be counted as dragon fight participants
+# DEFAULT: 128
+max-player-distance-from-end-center: 128
 
 # The number of experience points to give each player in the End upon Dragon death
 # DEFAULT: 12000 (68 levels)
@@ -81,6 +86,7 @@ egg-position:
 #   <players-in-end>: list of players in the End upon Dragon defeat
 # DEFAULT: <player> just defeated the Ender Dragon!
 defeat-announcement-message: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+
 ```
 
 ### Installation
