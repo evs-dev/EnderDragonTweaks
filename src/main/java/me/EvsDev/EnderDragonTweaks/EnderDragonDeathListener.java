@@ -73,7 +73,7 @@ public class EnderDragonDeathListener implements Listener {
 	}
 
 	private void giveXP(LivingEntity dragonEntity, World theEnd) {
-                Location loc = new Location(theEnd, 0, 0, 0);
+                Location loc = new Location(theEnd, 0, 65, 0);
 		// For every player in the End...
 		for (Player player : theEnd.getPlayers().stream().filter(p -> p.getLocation().distance(loc) <= playerRadius).collect(Collectors.toList())) {
 			// Give player XP

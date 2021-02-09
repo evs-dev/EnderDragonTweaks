@@ -56,7 +56,7 @@ public class ConfigManager {
 
 		String playersInEnd = "";
 		if (message.contains("<players-in-end>")) {
-                    Location loc = new Location(theEnd, 0, 0, 0);
+                    Location loc = new Location(theEnd, 0, 65, 0);
 			List<Player> players = theEnd.getPlayers().stream().filter(p -> p.getLocation().distance(loc) <= playerRadius).collect(Collectors.toList());
 			int minSize = killer == null ? 0 : 1;
 			if (players != null && players.size() > minSize) {
