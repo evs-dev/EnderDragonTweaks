@@ -1,7 +1,6 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.util.stream.Collectors;
-import static me.EvsDev.EnderDragonTweaks.ConfigManager.entry_playerDistanceFromOrigin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ public class EnderDragonDeathListener implements Listener {
 	private static int delayTicks = 80;
 	private static int xpPointsPerPlayer = 12000;
 	private static int orbCount = 8;
-        private static int playerRadius = 128;
+	private static int playerRadius = 128;
 	private static boolean doGiveXP = true;
 	private static boolean doDecorationOrbs = true;
 	private static boolean doSpawnEgg = true;
@@ -43,7 +42,7 @@ public class EnderDragonDeathListener implements Listener {
 		doDefeatAnnouncement = configManager.getBoolean(ConfigManager.entry_enableDefeatAnnouncement);
 		overrideEggY = configManager.getBoolean(ConfigManager.entry_overrideEggY);
 		configuredEggLocationAsVector = configManager.getEggLocationAsVector();
-                playerRadius = configManager.getInt(ConfigManager.entry_playerDistanceFromOrigin);
+		playerRadius = configManager.getInt(ConfigManager.entry_playerDistanceFromOrigin);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -73,7 +72,7 @@ public class EnderDragonDeathListener implements Listener {
 	}
 
 	private void giveXP(LivingEntity dragonEntity, World theEnd) {
-                Location loc = new Location(theEnd, 0, 65, 0);
+		Location loc = new Location(theEnd, 0, 65, 0);
 		// For every player in the End...
 		for (Player player : theEnd.getPlayers().stream().filter(p -> p.getLocation().distance(loc) <= playerRadius).collect(Collectors.toList())) {
 			// Give player XP
