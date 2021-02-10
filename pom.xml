@@ -28,10 +28,11 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
 				<filtering>true</filtering>
-				<directory>src/main/java</directory>
+				<directory>src</directory>
 			<includes>
 				<include>config.yml</include>
 				<include>plugin.yml</include>
