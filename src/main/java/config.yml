@@ -33,7 +33,7 @@ enable-defeat-announcement: true
 
 # The radius (in blocks) from the center of the end island where players will be counted as dragon fight participants
 # DEFAULT: 128
-max-player-distance-from-end-center: 128
+max-player-distance-from-end-centre: 128
 
 # The number of experience points to give each fight participant upon Dragon death
 # DEFAULT: 12000 (68 levels)
