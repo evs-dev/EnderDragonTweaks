@@ -16,7 +16,7 @@ public class ConfigManager {
 
 	public static final String entry_enabled = "enabled";
 	public static final String entry_delay = "delay";
-        public static final String entry_playerDistanceFromOrigin = "max-player-distance-from-end-center";
+    public static final String entry_playerDistanceFromOrigin = "max-player-distance-from-end-centre";
 	public static final String entry_xpPointsPerPlayer = "xp-points-per-player";
 	public static final String entry_orbCountPerPlayer = "orb-count-per-player";
 	public static final String entry_defeatMessage = "defeat-announcement-message";
