@@ -31,7 +31,7 @@ enable-defeat-announcement: true
 # |        Settings        |
 # |------------------------|
 
-# The radius (in blocks) from the center of the end island where players will be counted as dragon fight participants
+# The radius (in blocks) from the centre of the End island where players will be counted as Dragon fight participants
 # DEFAULT: 128
 max-player-distance-from-end-centre: 128
 
