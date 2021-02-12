@@ -1,3 +1,5 @@
+![Java CI with Maven](https://github.com/heathfx/EnderDragonTweaks/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 <p align="center">
     <img alt="logo" src="https://raw.githubusercontent.com/evs-dev/EnderDragonTweaks/master/logo.png" width="150px" />
 </p>
