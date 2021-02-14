@@ -1,6 +1,7 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,11 +10,13 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Location;
 
 public class ConfigManager {
 
 	public static final String entry_enabled = "enabled";
 	public static final String entry_delay = "delay";
+	public static final String entry_playerDistanceFromOrigin = "max-player-distance-from-end-centre";
 	public static final String entry_xpPointsPerPlayer = "xp-points-per-player";
 	public static final String entry_orbCountPerPlayer = "orb-count-per-player";
 	public static final String entry_defeatMessage = "defeat-announcement-message";
@@ -46,13 +49,15 @@ public class ConfigManager {
 
 	public String formatDefeatAnnouncementMessage(Player killer, World theEnd) {
 		String message = ChatColor.translateAlternateColorCodes('&', this.getString(entry_defeatMessage));
+		int playerRadius = getInt(entry_playerDistanceFromOrigin);
 		String killerName = "<UNKNOWN>";
 		if (killer != null)
 			killerName = killer.getDisplayName();
 
 		String playersInEnd = "";
 		if (message.contains("<players-in-end>")) {
-			List<Player> players = theEnd.getPlayers();
+			Location loc = new Location(theEnd, 0, 65, 0);
+			List<Player> players = theEnd.getPlayers().stream().filter(p -> p.getLocation().distance(loc) <= playerRadius).collect(Collectors.toList());
 			int minSize = killer == null ? 0 : 1;
 			if (players != null && players.size() > minSize) {
 				int count = 0;
