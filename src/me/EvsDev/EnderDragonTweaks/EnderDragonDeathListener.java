@@ -1,6 +1,7 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,27 +100,28 @@ public class EnderDragonDeathListener implements Listener {
 		}
 		eggLocation.getBlock().setType(Material.DRAGON_EGG);
 		Bukkit.getLogger().info(Main.LOG_PREFIX + "Spawned Dragon Egg at " +
-				String.format("%s %s %s in world %s",
-						eggLocation.getBlockX(),
-						eggLocation.getBlockY(),
-						eggLocation.getBlockZ(),
-						eggLocation.getWorld().getName()
-				)
+			String.format("%s %s %s in world %s",
+				eggLocation.getBlockX(),
+				eggLocation.getBlockY(),
+				eggLocation.getBlockZ(),
+				eggLocation.getWorld().getName()
+			)
 		);
 	}
 
 	private void sendDefeatAnnouncement(Player killer, World theEnd) {
 		Bukkit.broadcastMessage(
-				Main.getConfigManager().formatDefeatAnnouncementMessage(killer, theEnd)
-			);
+			Main.getConfigManager().formatDefeatAnnouncementMessage(killer, theEnd)
+		);
 	}
 
 	private Location findSpawnEggLocation(World theEnd) {
-		final Location searchLocation = new Location(theEnd,
-				configuredEggLocationAsVector.getBlockX(),
-				0,
-				configuredEggLocationAsVector.getBlockZ()
-			);
+		final Location searchLocation = new Location(
+	        theEnd,
+			configuredEggLocationAsVector.getBlockX(),
+			0,
+			configuredEggLocationAsVector.getBlockZ()
+		);
 
 		if (overrideEggY) {
 			searchLocation.setY(configuredEggLocationAsVector.getBlockY());

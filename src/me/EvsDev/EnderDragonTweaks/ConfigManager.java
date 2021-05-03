@@ -3,6 +3,7 @@ package me.EvsDev.EnderDragonTweaks;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -10,7 +11,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Location;
 
 public class ConfigManager {
 
@@ -75,16 +75,16 @@ public class ConfigManager {
 		}
 
 		return message
-					.replace("<killer>", killerName)
-					.replace("<players-in-end>", playersInEnd);
+			.replace("<killer>", killerName)
+			.replace("<players-in-end>", playersInEnd);
 	}
 
 	public Vector getEggLocationAsVector() {
 		return new Vector(
-				this.getInt(entry_eggPositionSection + "x"),
-				this.getInt(entry_eggPositionSection + "y"),
-				this.getInt(entry_eggPositionSection + "z")
-			);
+			this.getInt(entry_eggPositionSection + "x"),
+			this.getInt(entry_eggPositionSection + "y"),
+			this.getInt(entry_eggPositionSection + "z")
+		);
 	}
 
 }
