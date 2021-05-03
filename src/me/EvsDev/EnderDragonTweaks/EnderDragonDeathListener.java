@@ -92,11 +92,11 @@ public class EnderDragonDeathListener implements Listener {
 	private void spawnEgg(World theEnd) {
 		Location eggLocation = findSpawnEggLocation(theEnd);
 		if (eggLocation == null) {
-			Bukkit.getLogger().warning(Main.LOG_PREFIX + "Unable to find suitable position for Dragon Egg");
+			Util.logWarning("Unable to find suitable position for Dragon Egg");
 			return;
 		}
 		eggLocation.getBlock().setType(Material.DRAGON_EGG);
-		Bukkit.getLogger().info(Main.LOG_PREFIX + "Spawned Dragon Egg at " +
+		Util.logInfo("Spawned Dragon Egg at " +
 			String.format("%s %s %s in world %s",
 				eggLocation.getBlockX(),
 				eggLocation.getBlockY(),
