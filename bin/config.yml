@@ -30,6 +30,10 @@ enable-defeat-announcement: true
 # |        Settings        |
 # |------------------------|
 
+# The radius (in blocks) from the centre of the End island where players will be counted as Dragon fight participants
+# DEFAULT: 128
+max-player-distance-from-end-centre: 128
+
 # The number of experience points to give each player in the End upon Dragon death
 # DEFAULT: 12000 (68 levels)
 xp-points-per-player: 12000
@@ -57,6 +61,6 @@ egg-position:
 # Macros are replaced when the message is sent
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
-#   <players-in-end>: list of players in the End upon Dragon defeat
-# DEFAULT: <player> just defeated the Ender Dragon!
+#   <players-in-end>: list of players within max-player-distance-from-end-centre upon Dragon defeat
+# DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
 defeat-announcement-message: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
