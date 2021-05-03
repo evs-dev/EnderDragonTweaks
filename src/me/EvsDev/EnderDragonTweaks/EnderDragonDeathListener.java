@@ -1,7 +1,5 @@
 package me.EvsDev.EnderDragonTweaks;
 
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,9 +71,8 @@ public class EnderDragonDeathListener implements Listener {
 	}
 
 	private void giveXP(LivingEntity dragonEntity, World theEnd) {
-		Location loc = new Location(theEnd, 0, 65, 0);
 		// For every player in the End...
-		for (Player player : theEnd.getPlayers().stream().filter(p -> p.getLocation().distance(loc) <= playerRadius).collect(Collectors.toList())) {
+		for (Player player : Util.getPlayersInEndCentreRadius(theEnd, playerRadius)) {
 			// Give player XP
 			player.giveExp(xpPointsPerPlayer);
 
