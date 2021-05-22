@@ -5,19 +5,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	public static String LOG_PREFIX = "[plugin-name] ";
-
+	private static String logPrefix = "[plugin-name] ";
 	private static ConfigManager configManager;
 
 	@Override
 	public void onEnable() {
-		LOG_PREFIX = "[" + this.getName() + "] ";
+		logPrefix = "[" + this.getName() + "] ";
 
 		configManager = new ConfigManager(this);
 		if (!configManager.getBoolean(ConfigManager.entry_enabled)) return;
 
 		final PluginManager pluginManager = getServer().getPluginManager();
 		pluginManager.registerEvents(new EnderDragonDeathListener(), this);
+	}
+
+	public static String getLogPrefix() {
+	    return logPrefix;
 	}
 
 	public static ConfigManager getConfigManager() {
