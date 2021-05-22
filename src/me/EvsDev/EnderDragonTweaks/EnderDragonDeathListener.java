@@ -92,7 +92,9 @@ public class EnderDragonDeathListener implements Listener {
 	private void spawnEgg(World theEnd) {
 		Location eggLocation = findSpawnEggLocation(theEnd);
 		if (eggLocation == null) {
-			Util.logWarning("Unable to find suitable position for Dragon Egg");
+			Util.logWarning("Unable to find suitable position for Dragon Egg"
+			        + "(if this the Dragon's first death, this may be because the game has already spawned an Egg)"
+		        );
 			return;
 		}
 		eggLocation.getBlock().setType(Material.DRAGON_EGG);
@@ -130,7 +132,9 @@ public class EnderDragonDeathListener implements Listener {
 		// Search through the Y value of (0, 0) to find a place for the egg
 		for (int i = startY; i <= worldHeight; i++) {
 			searchLocation.setY(i);
-			if (searchLocation.getBlock().getType() != Material.BEDROCK) continue;
+			final Material type = searchLocation.getBlock().getType();
+			if (type == Material.DRAGON_EGG) break;
+			if (type != Material.BEDROCK) continue;
 
 			// The block is bedrock, so...
 			Location aboveLocation = searchLocation.clone().add(0, i == worldHeight ? 0 : 1, 0);
