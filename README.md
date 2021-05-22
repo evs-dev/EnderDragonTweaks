@@ -56,9 +56,18 @@ enable-defeat-announcement: true
 # DEFAULT: 128
 max-player-distance-from-end-centre: 128
 
-# The number of experience points to give each fight participant upon Dragon death
-# DEFAULT: 12000 (68 levels)
-xp-points-per-player: 12000
+# The way xp-per-player should be interpreted.
+# levels: The value is given in levels (e.g. 68 will add 68 to the XP number displayed to the player)
+#         This is useful to add a consistent number of points
+# points: The value is given in points, which changes based on the player's current XP
+#         i.e. 12000 points will not always equal 68 levels 
+# DEFAULT: levels
+xp-mode: levels
+
+# The amount of XP to give each Dragon fight participant upon Dragon death
+# This is interpreted differently depending on xp-mode
+# DEFAULT: 68
+xp-per-player: 68
 
 # The number of XP orbs spawned per player upon Dragon death (these are decorative only and have no XP value)
 # If there are a large number of players in the End upon Dragon death, having this too high may cause a lag spike
@@ -83,8 +92,8 @@ egg-position:
 # Macros are replaced when the message is sent
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
-#   <players-in-end>: list of players in the End upon Dragon defeat
-# DEFAULT: <player> just defeated the Ender Dragon!
+#   <players-in-end>: list of players within max-player-distance-from-end-centre upon Dragon defeat
+# DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
 defeat-announcement-message: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
 ```
 
