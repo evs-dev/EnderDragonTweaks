@@ -108,7 +108,7 @@ public class EnderDragonDeathListener implements Listener {
 
 	private void sendDefeatAnnouncement(Player killer, World theEnd) {
 		Bukkit.broadcastMessage(
-			Main.getConfigManager().formatDefeatAnnouncementMessage(killer, theEnd)
+			Util.formatDefeatAnnouncementMessage(killer, theEnd, Main.getConfigManager())
 		);
 	}
 
@@ -126,13 +126,14 @@ public class EnderDragonDeathListener implements Listener {
 		}
 
 		final int startY = searchLocation.getBlockY();
+		final int worldHeight = theEnd.getMaxHeight();
 		// Search through the Y value of (0, 0) to find a place for the egg
-		for (int i = startY; i <= 255; i++) {
+		for (int i = startY; i <= worldHeight; i++) {
 			searchLocation.setY(i);
 			if (searchLocation.getBlock().getType() != Material.BEDROCK) continue;
 
 			// The block is bedrock, so...
-			Location aboveLocation = searchLocation.clone().add(0, i == 255 ? 0 : 1, 0);
+			Location aboveLocation = searchLocation.clone().add(0, i == worldHeight ? 0 : 1, 0);
 			// Check if the above block is air
 			if (aboveLocation.getBlock().isEmpty()) {
 				// An air block above the portal bedrock pillar has been found
