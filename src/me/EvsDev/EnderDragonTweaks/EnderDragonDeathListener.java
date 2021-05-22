@@ -20,7 +20,8 @@ import org.bukkit.util.Vector;
 public class EnderDragonDeathListener implements Listener {
 
 	private static int delayTicks = 80;
-	private static int xpPointsPerPlayer = 12000;
+	private static String xpMode = "levels";
+	private static int xpPerPlayer = 68;
 	private static int orbCount = 8;
 	private static int playerRadius = 128;
 	private static boolean doGiveXP = true;
@@ -33,7 +34,8 @@ public class EnderDragonDeathListener implements Listener {
 	public EnderDragonDeathListener() {
 		ConfigManager configManager = Main.getConfigManager();
 		delayTicks = configManager.getInt(ConfigManager.entry_delay);
-		xpPointsPerPlayer = configManager.getInt(ConfigManager.entry_xpPointsPerPlayer);
+		xpMode = configManager.getString(ConfigManager.entry_xpMode).toLowerCase();
+		xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
 		orbCount = configManager.getInt(ConfigManager.entry_orbCountPerPlayer);
 		doGiveXP = configManager.getBoolean(ConfigManager.entry_enableXP);
 		doDecorationOrbs = configManager.getBoolean(ConfigManager.entry_enableDecorationOrbs);
@@ -74,7 +76,13 @@ public class EnderDragonDeathListener implements Listener {
 		// For every player in the End...
 		for (Player player : Util.getPlayersInEndCentreRadius(theEnd, playerRadius)) {
 			// Give player XP
-			player.giveExp(xpPointsPerPlayer);
+		    switch (xpMode) {
+		        default:
+		        case "levels":
+		            player.giveExpLevels(xpPerPlayer);
+		        case "points":
+    		        player.giveExp(xpPerPlayer);
+		    }
 
 			Location playerLocation = player.getEyeLocation();
 			theEnd.spawnParticle(Particle.PORTAL, playerLocation, 100, 0.3f, 0.3f, 0.3f, 0.5f);

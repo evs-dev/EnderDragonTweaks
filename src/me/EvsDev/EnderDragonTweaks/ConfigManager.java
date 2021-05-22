@@ -9,7 +9,8 @@ public class ConfigManager {
 	public static final String entry_enabled = "enabled";
 	public static final String entry_delay = "delay";
 	public static final String entry_playerDistanceFromOrigin = "max-player-distance-from-end-centre";
-	public static final String entry_xpPointsPerPlayer = "xp-points-per-player";
+	public static final String entry_xpMode = "xp-mode";
+	public static final String entry_xpPerPlayer = "xp-per-player";
 	public static final String entry_orbCountPerPlayer = "orb-count-per-player";
 	public static final String entry_defeatMessage = "defeat-announcement-message";
 	public static final String entry_enableXP = "enable-xp-drop";
@@ -25,6 +26,9 @@ public class ConfigManager {
 	public ConfigManager(Plugin plugin) {
 		this.config = plugin.getConfig();
 		plugin.saveDefaultConfig();
+		if (this.getInt("xp-points-per-player") != 0) {
+		    Util.logWarning("Your EnderDragonTweaks config is old! Delete/rename it and restart the server to generate a new one.");
+		}
 	}
 
 	public boolean getBoolean(String name) {
