@@ -146,9 +146,7 @@ public class EnderDragonDeathListener implements Listener {
         // Search through the Y value of (0, 0) to find a place for the egg
         for (int i = startY; i <= worldHeight; i++) {
             searchLocation.setY(i);
-            final Material type = searchLocation.getBlock().getType();
-            if (type == Material.DRAGON_EGG) break;
-            if (type != Material.BEDROCK) continue;
+            if (searchLocation.getBlock().getType() != Material.BEDROCK) continue;
 
             // The block is bedrock, so...
             Location aboveLocation = searchLocation.clone().add(0, i == worldHeight ? 0 : 1, 0);
