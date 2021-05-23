@@ -80,8 +80,10 @@ public class EnderDragonDeathListener implements Listener {
                 default:
                 case "levels":
                     player.giveExpLevels(xpPerPlayer);
+                    break;
                 case "points":
                     player.giveExp(xpPerPlayer);
+                    break;
             }
 
             Location playerLocation = player.getEyeLocation();
