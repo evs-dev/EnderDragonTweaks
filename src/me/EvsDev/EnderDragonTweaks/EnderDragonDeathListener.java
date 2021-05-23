@@ -100,6 +100,10 @@ public class EnderDragonDeathListener implements Listener {
     }
 
     private void spawnEgg(World theEnd) {
+        // The game automatically spawns an Egg when the Dragon is first killed
+        // This plugin shouldn't spawn another one
+        if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) return;
+
         Location eggLocation = findSpawnEggLocation(theEnd);
         if (eggLocation == null) {
             Util.logWarning("Unable to find suitable position for Dragon Egg"
