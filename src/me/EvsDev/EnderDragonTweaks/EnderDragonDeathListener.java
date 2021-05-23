@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -67,7 +68,7 @@ public class EnderDragonDeathListener implements Listener {
                 if (doSpawnEgg)
                     spawnEgg(theEnd);
                 if (doDefeatAnnouncement)
-                    sendDefeatAnnouncement(dragonEntity.getKiller(), theEnd);
+                    sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
             }
         }.runTaskLater(Main.getPlugin(Main.class), delayTicks);
     }
@@ -122,9 +123,10 @@ public class EnderDragonDeathListener implements Listener {
         );
     }
 
-    private void sendDefeatAnnouncement(Player killer, World theEnd) {
+    private void sendDefeatAnnouncement(Player killer, EntityDamageEvent damage, World theEnd) {
+        final String killerName = killer == null ? damage.getCause().toString().replace('_', ' ') : killer.getDisplayName();
         Bukkit.broadcastMessage(
-            Util.formatDefeatAnnouncementMessage(killer, theEnd, Main.getConfigManager())
+            Util.formatDefeatAnnouncementMessage(killerName, killer != null, theEnd, Main.getConfigManager())
         );
     }
 

@@ -19,16 +19,15 @@ public class Util {
             .collect(Collectors.toList());
     }
 
-    public static String formatDefeatAnnouncementMessage(Player killer, World theEnd, ConfigManager config) {
+    public static String formatDefeatAnnouncementMessage(String killerName, boolean killerIsPlayer, World theEnd, ConfigManager config) {
         final String message = ChatColor.translateAlternateColorCodes('&', config.getString(ConfigManager.entry_defeatMessage));
         int playerRadius = config.getInt(ConfigManager.entry_playerDistanceFromOrigin);
-        final String killerName = killer != null ? killer.getDisplayName() : "<UNKNOWN>";
 
         String playersInEnd = "";
         if (message.contains("<players-in-end>")) {
             final List<Player> players = Util.getPlayersInEndCentreRadius(theEnd, playerRadius);
             int numPlayers = players.size();
-            int minNumPlayers = killer == null ? 0 : 1;
+            int minNumPlayers = !killerIsPlayer ? 0 : 1;
 
             if (players != null && numPlayers > minNumPlayers) {
                 int count = 0;
