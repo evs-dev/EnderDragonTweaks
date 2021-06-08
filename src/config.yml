@@ -3,6 +3,9 @@
 # and contributed to by HeathFX
 # CONFIGURATION FILE
 
+# Config version - DO NOT CHANGE
+version: 1
+
 # Is the plugin enabled? Should the Dragon death event be registered?
 # DEFAULT: true
 enabled: true

@@ -26,7 +26,7 @@ public class ConfigManager {
     public ConfigManager(Plugin plugin) {
         this.config = plugin.getConfig();
         plugin.saveDefaultConfig();
-        if (this.getInt("xp-points-per-player") != 0) {
+        if (this.getInt("version") < 1) {
             Util.logWarning("Your EnderDragonTweaks config is old! Delete/rename it and restart the server to generate a new one.");
         }
     }
