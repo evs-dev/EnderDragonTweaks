@@ -1,5 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -125,8 +128,13 @@ public class EnderDragonDeathListener implements Listener {
 
     private void sendDefeatAnnouncement(Player killer, EntityDamageEvent damage, World theEnd) {
         final String killerName = killer == null ? damage.getCause().toString().replace('_', ' ') : killer.getDisplayName();
+        final List<String> fightParticipantNames = Util.getPlayersInEndCentreRadius(
+            theEnd,
+            Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
+        ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
+
         Bukkit.broadcastMessage(
-            Util.formatDefeatAnnouncementMessage(killerName, killer != null, theEnd, Main.getConfigManager())
+            Util.formatDefeatAnnouncementMessage(killerName, killer != null, fightParticipantNames, Main.getConfigManager())
         );
     }
 

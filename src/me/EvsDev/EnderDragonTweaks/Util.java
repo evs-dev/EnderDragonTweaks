@@ -19,29 +19,52 @@ public class Util {
             .collect(Collectors.toList());
     }
 
-    public static String formatDefeatAnnouncementMessage(String killerName, boolean killerIsPlayer, World theEnd, ConfigManager config) {
-        final String message = ChatColor.translateAlternateColorCodes('&', config.getString(ConfigManager.entry_defeatMessage));
-        int playerRadius = config.getInt(ConfigManager.entry_playerDistanceFromOrigin);
+    public static String formatDefeatAnnouncementMessage(String killerName, boolean killerIsPlayer, List<String> fightParticipantNames, ConfigManager config) {
+        if (fightParticipantNames == null || fightParticipantNames.size() == 0) return null;
+        final int numFightParticipants = fightParticipantNames.size();
+
+        boolean multipleParticipants;
+        if (numFightParticipants == 1 && !killerIsPlayer) {
+            // One player killed the Dragon with e.g. a bed, so ideally they should be credited and not the bed
+            // With multiple players it is impossible/too challenging to determine who blew up the bed (oh well)
+            multipleParticipants = false;
+            killerName = fightParticipantNames.get(0);
+            killerIsPlayer = true;
+        } else {
+            multipleParticipants = numFightParticipants > 1 || !killerIsPlayer;
+        }
+
+        final String message = ChatColor.translateAlternateColorCodes(
+            '&',
+            config.getString(
+                multipleParticipants ? ConfigManager.entry_defeatMessageMultipleParticipants : ConfigManager.entry_defeatMessageOneParticipant
+            )
+        );
 
         String playersInEnd = "";
         if (message.contains("<players-in-end>")) {
-            final List<Player> players = Util.getPlayersInEndCentreRadius(theEnd, playerRadius);
-            int numPlayers = players.size();
-            int minNumPlayers = !killerIsPlayer ? 0 : 1;
+            final int minNumPlayers = killerIsPlayer ? 1 : 0;
 
-            if (players != null && numPlayers > minNumPlayers) {
+            if (numFightParticipants > minNumPlayers) {
                 int count = 0;
-                for (Player player : players) {
-                    final String name = player.getDisplayName();
+                for (String name : fightParticipantNames) {
                     count++;
                     if (!name.equals(killerName)) {
                         playersInEnd += name;
-                        if (count < numPlayers)
-                            playersInEnd += ", ";
+                        if (count < numFightParticipants) {
+                            if (numFightParticipants == (killerIsPlayer ? 3 : 2)) {
+                                // Between 2 "helping" players
+                                playersInEnd += " & ";
+                            } else if (count == numFightParticipants - 1) {
+                                // Just before last player of 3+ "helping" players
+                                playersInEnd += ", & ";
+                            } else {
+                                // Between 3+ "helping" players (expect penultimate and final)
+                                playersInEnd += ", ";
+                            }
+                        }
                     }
                 }
-            } else {
-                playersInEnd = "no-one";
             }
         }
 

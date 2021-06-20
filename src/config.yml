@@ -4,7 +4,7 @@
 # CONFIGURATION FILE
 
 # Config version - DO NOT CHANGE
-version: 1
+version: 0
 
 # Is the plugin enabled? Should the Dragon death event be registered?
 # DEFAULT: true
@@ -75,5 +75,7 @@ egg-position:
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
 #   <players-in-end>: list of players within max-player-distance-from-end-centre upon Dragon defeat
+# DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r!"
+defeat-announcement-message-one-participant: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
-defeat-announcement-message: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+defeat-announcement-message-multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
