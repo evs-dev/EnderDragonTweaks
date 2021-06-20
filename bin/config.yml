@@ -74,8 +74,8 @@ egg-position:
 # Macros are replaced when the message is sent
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
-#   <players-in-end>: list of players within max-player-distance-from-end-centre upon Dragon defeat
+#   <participants>: list of players within max-player-distance-from-end-centre upon Dragon defeat
 # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 defeat-announcement-message-one-participant: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
-defeat-announcement-message-multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+defeat-announcement-message-multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"

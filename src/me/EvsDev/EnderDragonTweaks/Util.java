@@ -41,8 +41,8 @@ public class Util {
             )
         );
 
-        String playersInEnd = "";
-        if (message.contains("<players-in-end>")) {
+        String helpingParticipants = "";
+        if (message.contains("<participants>")) {
             final int minNumPlayers = killerIsPlayer ? 1 : 0;
 
             if (numFightParticipants > minNumPlayers) {
@@ -50,27 +50,29 @@ public class Util {
                 for (String name : fightParticipantNames) {
                     count++;
                     if (!name.equals(killerName)) {
-                        playersInEnd += name;
+                        helpingParticipants += name;
                         if (count < numFightParticipants) {
                             if (numFightParticipants == (killerIsPlayer ? 3 : 2)) {
                                 // Between 2 "helping" players
-                                playersInEnd += " & ";
+                                helpingParticipants += " & ";
                             } else if (count == numFightParticipants - 1) {
                                 // Just before last player of 3+ "helping" players
-                                playersInEnd += ", & ";
+                                helpingParticipants += ", & ";
                             } else {
                                 // Between 3+ "helping" players (expect penultimate and final)
-                                playersInEnd += ", ";
+                                helpingParticipants += ", ";
                             }
                         }
                     }
                 }
+            } else {
+                helpingParticipants += "no-one";
             }
         }
 
         return message
             .replace("<killer>", killerName)
-            .replace("<players-in-end>", playersInEnd);
+            .replace("<participants>", helpingParticipants);
     }
 
     public static void logInfo(String message) {
