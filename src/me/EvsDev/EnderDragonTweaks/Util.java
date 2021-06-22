@@ -72,13 +72,13 @@ public class Util {
             output += element;
             if (count < length) {
                 if (length == 2) {
-                    // Between 2 "helping" players
+                    // Between 2 players
                     output += " & ";
                 } else if (count == length - 1) {
-                    // Just before last player of 3+ "helping" players
+                    // Just before last player of 3+ players
                     output += ", & ";
                 } else {
-                    // Between 3+ "helping" players (expect penultimate and final)
+                    // Between 3+ players (except penultimate and final)
                     output += ", ";
                 }
             }
