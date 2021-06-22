@@ -14,6 +14,8 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
     - The Dragon Egg respawns in a configurable place every time the Dragon is defeated
 - Dragon death announcement
     - A customisable message is displayed in chat when the Dragon is defeated, including the killer's name and the contributors to the fight
+- Custom commands
+    - Run custom commands when the Dragon is defeated
 
 
 ### Config
