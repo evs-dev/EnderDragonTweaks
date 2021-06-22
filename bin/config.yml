@@ -1,7 +1,10 @@
 # EnderDragonTweaks - Ender Dragon tweaks, mainly for SMP servers
 # by EvsDev (https://github.com/evs-dev)
-# and contributed to by HeathFX
+# contributors: https://github.com/evs-dev/EnderDragonTweaks/graphs/contributors
 # CONFIGURATION FILE
+
+# Config version - DO NOT CHANGE
+version: 0
 
 # Is the plugin enabled? Should the Dragon death event be registered?
 # DEFAULT: true
@@ -26,6 +29,9 @@ enable-egg-respawn: true
 
 # Should a message be broadcasted when the Dragon is defeated?
 enable-defeat-announcement: true
+
+# Should commands be run when the Dragon is defeated?
+enable-commands: true
 
 # |------------------------|
 # |        Settings        |
@@ -71,6 +77,27 @@ egg-position:
 # Macros are replaced when the message is sent
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
-#   <players-in-end>: list of players within max-player-distance-from-end-centre upon Dragon defeat
+#   <participants>: list of players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
+# DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r!"
+defeat-announcement-message-one-participant: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
-defeat-announcement-message: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+defeat-announcement-message-multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
+
+# The commands to be run by the server when the Dragon is defeated
+# Note that they will always send command feedback to the server console and all online ops
+# !!! QUOTES ("") ARE REQUIRED !!!
+# Macros are replaced when the message is sent
+# MACROS:
+#   <killer>: name of the player who killed the Dragon
+#   <participants-list>: list of players within max-player-distance-from-end-centre upon Dragon defeat (e.g. "p1, p2, & p3") (EXCEPT the killer)
+#   <each-participant>: the command will be run individually for players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
+# DEFAULT: []
+commands:
+  #- "give <killer> minecraft:diamond 4"
+  #- "give <each-participant> minecraft:iron_ingot 8"
+  #- "say Congratulations <killer> and <participants-list>!"
+  
+# The text to replace <participants-list> with if there are no Dragon fight participants other than the killer
+# E.g. (using the 3rd example command) "Congratulations dragonkiller495 and no-one else!"
+# DEFAULT: "no-one else"
+commands-no-participants-filler: "no-one else"

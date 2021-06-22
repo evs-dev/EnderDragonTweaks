@@ -5,26 +5,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	private static String logPrefix = "[plugin-name] ";
-	private static ConfigManager configManager;
+    public static final String LOG_PREFIX = "[EnderDragonTweaks] ";
+    private static ConfigManager configManager;
 
-	@Override
-	public void onEnable() {
-		logPrefix = "[" + this.getName() + "] ";
+    @Override
+    public void onEnable() {
+        configManager = new ConfigManager(this);
+        if (!configManager.getBoolean(ConfigManager.entry_enabled)) return;
 
-		configManager = new ConfigManager(this);
-		if (!configManager.getBoolean(ConfigManager.entry_enabled)) return;
+        final PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new EnderDragonDeathListener(), this);
+    }
 
-		final PluginManager pluginManager = getServer().getPluginManager();
-		pluginManager.registerEvents(new EnderDragonDeathListener(), this);
-	}
-
-	public static String getLogPrefix() {
-	    return logPrefix;
-	}
-
-	public static ConfigManager getConfigManager() {
-		return configManager;
-	}
+    public static ConfigManager getConfigManager() {
+        return configManager;
+    }
 
 }
