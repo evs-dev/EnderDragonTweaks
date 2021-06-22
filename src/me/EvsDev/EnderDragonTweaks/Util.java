@@ -91,11 +91,11 @@ public class Util {
     }
 
     public static void logInfo(String message) {
-        Bukkit.getLogger().info(Main.getLogPrefix() + message);
+        Bukkit.getLogger().info(Main.LOG_PREFIX + message);
     }
 
     public static void logWarning(String message) {
-        Bukkit.getLogger().warning(Main.getLogPrefix() + message);
+        Bukkit.getLogger().warning(Main.LOG_PREFIX + message);
     }
 
 }
