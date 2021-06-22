@@ -28,10 +28,12 @@ public class EnderDragonDeathListener implements Listener {
     private static int xpPerPlayer = 68;
     private static int orbCount = 8;
     private static int playerRadius = 128;
+    private static List<String> commandsList;
     private static boolean doGiveXP = true;
     private static boolean doDecorationOrbs = true;
     private static boolean doSpawnEgg = true;
     private static boolean doDefeatAnnouncement = true;
+    private static boolean doCommands = true;
     private static boolean overrideEggY = false;
     private static Vector configuredEggLocationAsVector;
 
@@ -41,10 +43,12 @@ public class EnderDragonDeathListener implements Listener {
         xpMode = configManager.getString(ConfigManager.entry_xpMode).toLowerCase();
         xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
         orbCount = configManager.getInt(ConfigManager.entry_orbCountPerPlayer);
+        commandsList = configManager.getStringList(ConfigManager.entry_commandsList);
         doGiveXP = configManager.getBoolean(ConfigManager.entry_enableXP);
         doDecorationOrbs = configManager.getBoolean(ConfigManager.entry_enableDecorationOrbs);
         doSpawnEgg = configManager.getBoolean(ConfigManager.entry_enableEggRespawn);
         doDefeatAnnouncement = configManager.getBoolean(ConfigManager.entry_enableDefeatAnnouncement);
+        doCommands = configManager.getBoolean(ConfigManager.entry_enableCommands);
         overrideEggY = configManager.getBoolean(ConfigManager.entry_overrideEggY);
         configuredEggLocationAsVector = configManager.getEggLocationAsVector();
         playerRadius = configManager.getInt(ConfigManager.entry_playerDistanceFromOrigin);
@@ -72,6 +76,18 @@ public class EnderDragonDeathListener implements Listener {
                     spawnEgg(theEnd);
                 if (doDefeatAnnouncement)
                     sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
+                if (doCommands) {
+                    List<String> allParticipantNames = Util.getPlayersInEndCentreRadius(
+                        theEnd,
+                        Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
+                    ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
+                    if (dragonEntity.getKiller() == null && allParticipantNames.size() == 1) {
+                        // If the Dragon is defeated by a non-player and there is only one player, that player must be the killer
+                        runCommands(allParticipantNames.get(0), allParticipantNames);
+                    } else {
+                        runCommands(Util.getKillerName(dragonEntity.getKiller(), dragonEntity.getLastDamageCause()), allParticipantNames);
+                    }
+                }
             }
         }.runTaskLater(Main.getPlugin(Main.class), delayTicks);
     }
@@ -127,7 +143,7 @@ public class EnderDragonDeathListener implements Listener {
     }
 
     private void sendDefeatAnnouncement(Player killer, EntityDamageEvent damage, World theEnd) {
-        final String killerName = killer == null ? damage.getCause().toString().replace('_', ' ') : killer.getDisplayName();
+        final String killerName = Util.getKillerName(killer, damage);
         final List<String> fightParticipantNames = Util.getPlayersInEndCentreRadius(
             theEnd,
             Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
@@ -136,6 +152,30 @@ public class EnderDragonDeathListener implements Listener {
         Bukkit.broadcastMessage(
             Util.formatDefeatAnnouncementMessage(killerName, killer != null, fightParticipantNames, Main.getConfigManager())
         );
+    }
+
+    private void runCommands(String killerName, List<String> participantNames) {
+        if (commandsList.size() == 0) return;
+        // Remove the killer from participants to allow maximum flexibility in the config
+        participantNames.remove(killerName);
+        final String participantsString = participantNames.size() > 0 ?
+            Util.formatParticipantsList(participantNames) : Main.getConfigManager().getString(ConfigManager.entry_commandsNoParticipantsFiller);
+
+        Util.logInfo("Executing " + commandsList.size() + " command(s)");
+
+        for (String command : commandsList) {
+            final String cmd = command
+                .replace("<killer>", killerName)
+                .replace("<participants-list>", participantsString);
+            if (cmd.contains("<each-participant>")) {
+                // Run the command for each participant individually
+                for (String participantName : participantNames) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("<each-participant>", participantName));
+                }
+            } else {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            }
+        }
     }
 
     private Location findSpawnEggLocation(World theEnd) {

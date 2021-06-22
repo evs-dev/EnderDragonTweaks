@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -21,7 +22,7 @@ public class Util {
 
     public static String formatDefeatAnnouncementMessage(String killerName, boolean killerIsPlayer, List<String> fightParticipantNames, ConfigManager config) {
         if (fightParticipantNames == null || fightParticipantNames.size() == 0) return null;
-        final int numFightParticipants = fightParticipantNames.size();
+        int numFightParticipants = fightParticipantNames.size();
 
         boolean multipleParticipants;
         if (numFightParticipants == 1 && !killerIsPlayer) {
@@ -43,28 +44,15 @@ public class Util {
 
         String helpingParticipants = "";
         if (message.contains("<participants>")) {
-            final int minNumPlayers = killerIsPlayer ? 1 : 0;
+            try {
+                fightParticipantNames.remove(killerName);
+            } catch (UnsupportedOperationException e) {
+                // An unmodifiable list was passed to fightParticipantNames (e.g. Arrays.asList(...))
+            }
+            numFightParticipants--;
 
-            if (numFightParticipants > minNumPlayers) {
-                int count = 0;
-                for (String name : fightParticipantNames) {
-                    count++;
-                    if (!name.equals(killerName)) {
-                        helpingParticipants += name;
-                        if (count < numFightParticipants) {
-                            if (numFightParticipants == (killerIsPlayer ? 3 : 2)) {
-                                // Between 2 "helping" players
-                                helpingParticipants += " & ";
-                            } else if (count == numFightParticipants - 1) {
-                                // Just before last player of 3+ "helping" players
-                                helpingParticipants += ", & ";
-                            } else {
-                                // Between 3+ "helping" players (expect penultimate and final)
-                                helpingParticipants += ", ";
-                            }
-                        }
-                    }
-                }
+            if (numFightParticipants > 0) {
+                helpingParticipants = formatParticipantsList(fightParticipantNames);
             } else {
                 helpingParticipants += "no-one";
             }
@@ -73,6 +61,33 @@ public class Util {
         return message
             .replace("<killer>", killerName)
             .replace("<participants>", helpingParticipants);
+    }
+
+    public static String formatParticipantsList(List<String> list) {
+        int count = 0;
+        String output = "";
+        final int length = list.size();
+        for (String element : list) {
+            count++;
+            output += element;
+            if (count < length) {
+                if (length == 2) {
+                    // Between 2 "helping" players
+                    output += " & ";
+                } else if (count == length - 1) {
+                    // Just before last player of 3+ "helping" players
+                    output += ", & ";
+                } else {
+                    // Between 3+ "helping" players (expect penultimate and final)
+                    output += ", ";
+                }
+            }
+        }
+        return output;
+    }
+
+    public static String getKillerName(Player killer, EntityDamageEvent damage) {
+        return killer == null ? damage.getCause().toString().replace('_', ' ') : killer.getDisplayName();
     }
 
     public static void logInfo(String message) {
