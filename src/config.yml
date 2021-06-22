@@ -100,4 +100,4 @@ commands:
 # The text to replace <participants-list> with if there are no Dragon fight participants other than the killer
 # E.g. (using the 3rd example command) "Congratulations dragonkiller495 and no-one else!"
 # DEFAULT: "no-one else"
-commands-no-participants-filler: "no-one else" 
+commands-no-participants-filler: "no-one else"
