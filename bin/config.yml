@@ -89,13 +89,14 @@ defeat-announcement-message-multiple-participants: "&6<killer>&r just defeated t
 # Macros are replaced when the message is sent
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
+#   <killer-display-name>: display name of the player who killed the Dragon (may be the same as <killer>, or e.g. the nickname of the player)
 #   <participants-list>: list of players within max-player-distance-from-end-centre upon Dragon defeat (e.g. "p1, p2, & p3") (EXCEPT the killer)
 #   <each-participant>: the command will be run individually for players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
 # DEFAULT: []
 commands:
   #- "give <killer> minecraft:diamond 4"
   #- "give <each-participant> minecraft:iron_ingot 8"
-  #- "say Congratulations <killer> and <participants-list>!"
+  #- "say Congratulations <killer-display-name> and <participants-list>!"
   
 # The text to replace <participants-list> with if there are no Dragon fight participants other than the killer
 # E.g. (using the 3rd example command) "Congratulations dragonkiller495 and no-one else!"
