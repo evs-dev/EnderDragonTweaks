@@ -35,7 +35,7 @@ public class ConfigManager {
 
     // Increment this when updating the default config in any way
     // NOTE: The value of the version key in the config should ALWAYS BE 0 to allow the below code to work
-    private static final int CONFIG_VERSION = 1;
+    private static final int CONFIG_VERSION = 2;
     private FileConfiguration config;
 
     public ConfigManager(Plugin plugin) {

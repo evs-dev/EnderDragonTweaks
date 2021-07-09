@@ -77,15 +77,25 @@ public class EnderDragonDeathListener implements Listener {
                 if (doDefeatAnnouncement)
                     sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
                 if (doCommands) {
-                    List<String> allParticipantNames = Util.getPlayersInEndCentreRadius(
+                    final List<Player> allParticipants = Util.getPlayersInEndCentreRadius(
                         theEnd,
                         Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
-                    ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
-                    if (dragonEntity.getKiller() == null && allParticipantNames.size() == 1) {
+                    );
+                    final List<String> participantNames = allParticipants
+                        .stream().map(p -> p.getName()).collect(Collectors.toList());
+                    final List<String> participantDisplayNames = allParticipants
+                        .stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
+
+                    if (dragonEntity.getKiller() == null && participantNames.size() == 1) {
                         // If the Dragon is defeated by a non-player and there is only one player, that player must be the killer
-                        runCommands(allParticipantNames.get(0), allParticipantNames);
+                        runCommands(participantNames.get(0), participantDisplayNames.get(0), participantNames, participantDisplayNames);
                     } else {
-                        runCommands(Util.getKillerName(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), false), allParticipantNames);
+                        runCommands(
+                            Util.getKillerName(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), false),
+                            Util.getKillerName(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), true),
+                            participantNames,
+                            participantDisplayNames
+                       );
                     }
                 }
             }
@@ -154,18 +164,20 @@ public class EnderDragonDeathListener implements Listener {
         );
     }
 
-    private void runCommands(String killerName, List<String> participantNames) {
+    private void runCommands(String killerName, String killerDisplayName, List<String> participantNames, List<String> participantDisplayNames) {
         if (commandsList.size() == 0) return;
         // Remove the killer from participants to allow maximum flexibility in the config
         participantNames.remove(killerName);
-        final String participantsString = participantNames.size() > 0 ?
-            Util.formatParticipantsList(participantNames) : Main.getConfigManager().getString(ConfigManager.entry_commandsNoParticipantsFiller);
+        participantDisplayNames.remove(killerDisplayName);
+        final String participantsString = participantDisplayNames.size() > 0 ?
+            Util.formatParticipantsList(participantDisplayNames) : Main.getConfigManager().getString(ConfigManager.entry_commandsNoParticipantsFiller);
 
         Util.logInfo("Executing " + commandsList.size() + " command(s)");
 
         for (String command : commandsList) {
             final String cmd = command
                 .replace("<killer>", killerName)
+                .replace("<killer-display-name>", killerDisplayName)
                 .replace("<participants-list>", participantsString);
             if (cmd.contains("<each-participant>")) {
                 // Run the command for each participant individually
