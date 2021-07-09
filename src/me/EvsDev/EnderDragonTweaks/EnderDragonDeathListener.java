@@ -85,7 +85,7 @@ public class EnderDragonDeathListener implements Listener {
                         // If the Dragon is defeated by a non-player and there is only one player, that player must be the killer
                         runCommands(allParticipantNames.get(0), allParticipantNames);
                     } else {
-                        runCommands(Util.getKillerName(dragonEntity.getKiller(), dragonEntity.getLastDamageCause()), allParticipantNames);
+                        runCommands(Util.getKillerName(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), false), allParticipantNames);
                     }
                 }
             }
@@ -143,7 +143,7 @@ public class EnderDragonDeathListener implements Listener {
     }
 
     private void sendDefeatAnnouncement(Player killer, EntityDamageEvent damage, World theEnd) {
-        final String killerName = Util.getKillerName(killer, damage);
+        final String killerName = Util.getKillerName(killer, damage, true);
         final List<String> fightParticipantNames = Util.getPlayersInEndCentreRadius(
             theEnd,
             Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)

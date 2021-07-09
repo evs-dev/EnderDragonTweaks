@@ -86,8 +86,11 @@ public class Util {
         return output;
     }
 
-    public static String getKillerName(Player killer, EntityDamageEvent damage) {
-        return killer == null ? damage.getCause().toString().replace('_', ' ') : killer.getDisplayName();
+    public static String getKillerName(Player killer, EntityDamageEvent damage, boolean displayName) {
+        if (killer == null) {
+            return damage.getCause().toString().replace('_', ' ');
+        }
+        return displayName ? killer.getDisplayName() : killer.getName();
     }
 
     public static void logInfo(String message) {
