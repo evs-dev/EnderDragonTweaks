@@ -64,6 +64,29 @@ enable-commands: true
 # DEFAULT: 128
 max-player-distance-from-end-centre: 128
 
+# The delay in ticks (20 ticks = 1 second) before the Dragon can be respawned after having been defeated
+# The cooldown is reset when the server is restarted
+# DEFAULT: 0
+dragon-respawn-cooldown: 0
+# The message broadcasted when the Dragon respawn cooldown begins (if there is one)
+# Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <time-remaining>: number of seconds before the cooldown ends
+# DEFAULT: "The <time-remaining>-second Dragon respawn cooldown has started!"
+enter-respawn-cooldown-announcement: "The <time-remaining>-second Dragon respawn cooldown has started!"
+# The message broadcasted when the Dragon respawn cooldown ends
+# Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <cooldown-length>: number of seconds the cooldown lasts; dragon-respawn-cooldown / 20
+# DEFAULT: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
+leave-respawn-cooldown-announcement: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
+# The message sent to a player who tries to place an End Crystal to respawn the Dragon when the cooldown is active 
+# Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <time-remaining>: number of seconds before the cooldown ends
+# DEFAULT: "The Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+respawn-cooldown-warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+
 # The way xp-per-player should be interpreted.
 # levels: The value is given in levels (e.g. 68 will add 68 to the XP number displayed to the player)
 #         This is useful to add a consistent number of points
@@ -112,13 +135,14 @@ defeat-announcement-message-multiple-participants: "&6<killer>&r just defeated t
 # Macros are replaced when the message is sent
 # MACROS:
 #   <killer>: name of the player who killed the Dragon
+#   <killer-display-name>: display name of the player who killed the Dragon (may be the same as <killer>, or e.g. the nickname of the player)
 #   <participants-list>: list of players within max-player-distance-from-end-centre upon Dragon defeat (e.g. "p1, p2, & p3") (EXCEPT the killer)
 #   <each-participant>: the command will be run individually for players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
 # DEFAULT: []
 commands:
   #- "give <killer> minecraft:diamond 4"
   #- "give <each-participant> minecraft:iron_ingot 8"
-  #- "say Congratulations <killer> and <participants-list>!"
+  #- "say Congratulations <killer-display-name> and <participants-list>!"
   
 # The text to replace <participants-list> with if there are no Dragon fight participants other than the killer
 # E.g. (using the 3rd example command) "Congratulations dragonkiller495 and no-one else!"
