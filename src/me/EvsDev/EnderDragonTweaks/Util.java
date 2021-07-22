@@ -15,8 +15,9 @@ public class Util {
 
     public static List<Player> getPlayersInEndCentreRadius(World theEnd, int radius) {
         final Location endCentre = new Location(theEnd, 0, 65, 0);
+        final int radiusSqrd = radius * radius;
         return theEnd.getPlayers().stream()
-            .filter(p -> p.getLocation().distance(endCentre) <= radius)
+            .filter(p -> p.getLocation().distanceSquared(endCentre) <= radiusSqrd)
             .collect(Collectors.toList());
     }
 
