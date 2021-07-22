@@ -63,7 +63,8 @@ public class EnderDragonDeathListener implements Listener {
 
         if (theEnd.getEnvironment() != Environment.THE_END) return;
 
-        e.setDroppedExp(0);
+        if (doGiveXP)
+            e.setDroppedExp(0);
 
         theEnd.spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, dragonEntity.getLocation(), 1200, 2, 1, 2, 1);
 
