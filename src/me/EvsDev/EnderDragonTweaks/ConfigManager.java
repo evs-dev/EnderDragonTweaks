@@ -17,6 +17,10 @@ public class ConfigManager {
     public static final String entry_enabled = "enabled";
     public static final String entry_delay = "delay";
     public static final String entry_playerDistanceFromOrigin = "max-player-distance-from-end-centre";
+    public static final String entry_dragonRespawnCooldown = "dragon-respawn-cooldown";
+    public static final String entry_dragonRespawnCooldownEnterAnnouncement = "enter-respawn-cooldown-announcement";
+    public static final String entry_dragonRespawnCooldownLeaveAnnouncement = "leave-respawn-cooldown-announcement";
+    public static final String entry_dragonRespawnCooldownWarning = "respawn-cooldown-warning";
     public static final String entry_xpMode = "xp-mode";
     public static final String entry_xpPerPlayer = "xp-per-player";
     public static final String entry_orbCountPerPlayer = "orb-count-per-player";
@@ -35,7 +39,7 @@ public class ConfigManager {
 
     // Increment this when updating the default config in any way
     // NOTE: The value of the version key in the config should ALWAYS BE 0 to allow the below code to work
-    private static final int CONFIG_VERSION = 2;
+    private static final int CONFIG_VERSION = 3;
     private FileConfiguration config;
 
     public ConfigManager(Plugin plugin) {

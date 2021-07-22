@@ -41,6 +41,29 @@ enable-commands: true
 # DEFAULT: 128
 max-player-distance-from-end-centre: 128
 
+# The delay in ticks (20 ticks = 1 second) before the Dragon can be respawned after having been defeated
+# The cooldown is reset when the server is restarted
+# DEFAULT: 0
+dragon-respawn-cooldown: 0
+# The message broadcasted when the Dragon respawn cooldown begins (if there is one)
+# Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <time-remaining>: number of seconds before the cooldown ends
+# DEFAULT: "The <time-remaining>-second Dragon respawn cooldown has started!"
+enter-respawn-cooldown-announcement: "The <time-remaining>-second Dragon respawn cooldown has started!"
+# The message broadcasted when the Dragon respawn cooldown ends
+# Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <cooldown-length>: number of seconds the cooldown lasts; dragon-respawn-cooldown / 20
+# DEFAULT: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
+leave-respawn-cooldown-announcement: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
+# The message sent to a player who tries to place an End Crystal to respawn the Dragon when the cooldown is active 
+# Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <time-remaining>: number of seconds before the cooldown ends
+# DEFAULT: "The Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+respawn-cooldown-warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+
 # The way xp-per-player should be interpreted.
 # levels: The value is given in levels (e.g. 68 will add 68 to the XP number displayed to the player)
 #         This is useful to add a consistent number of points

@@ -38,7 +38,7 @@ public class EnderDragonDeathListener implements Listener {
     private static Vector configuredEggLocationAsVector;
 
     public EnderDragonDeathListener() {
-        ConfigManager configManager = Main.getConfigManager();
+        final ConfigManager configManager = Main.getConfigManager();
         delayTicks = configManager.getInt(ConfigManager.entry_delay);
         xpMode = configManager.getString(ConfigManager.entry_xpMode).toLowerCase();
         xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
@@ -66,6 +66,8 @@ public class EnderDragonDeathListener implements Listener {
         e.setDroppedExp(0);
 
         theEnd.spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, dragonEntity.getLocation(), 1200, 2, 1, 2, 1);
+
+        EndCrystalPlacedListener.startCooldown();
 
         new BukkitRunnable() {
             @Override
