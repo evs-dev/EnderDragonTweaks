@@ -34,6 +34,7 @@ public class ConfigManager {
     public static final String entry_enableDefeatAnnouncement = "enable-defeat-announcement";
     public static final String entry_enableCommands = "enable-commands";
 
+    public static final String entry_eggRespawnChance = "egg-respawn-chance";
     public static final String entry_eggPositionSection = "egg-position.";
     public static final String entry_overrideEggY = entry_eggPositionSection + "override-y";
 
@@ -82,6 +83,10 @@ public class ConfigManager {
 
     public int getInt(String name) {
         return this.config.getInt(name);
+    }
+
+    public double getDouble(String name) {
+        return this.config.getDouble(name);
     }
 
     public String getString(String name) {

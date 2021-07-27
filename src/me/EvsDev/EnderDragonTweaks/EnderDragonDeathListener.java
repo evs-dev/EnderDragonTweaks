@@ -1,6 +1,7 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -26,6 +27,7 @@ public class EnderDragonDeathListener implements Listener {
     private static int delayTicks = 80;
     private static String xpMode = "levels";
     private static int xpPerPlayer = 68;
+    private static double eggRespawnChance = 1.0d;
     private static int orbCount = 8;
     private static int playerRadius = 128;
     private static List<String> commandsList;
@@ -37,12 +39,15 @@ public class EnderDragonDeathListener implements Listener {
     private static boolean overrideEggY = false;
     private static Vector configuredEggLocationAsVector;
 
+    private final Random RANDOM = new Random();
+
     public EnderDragonDeathListener() {
         final ConfigManager configManager = Main.getConfigManager();
         delayTicks = configManager.getInt(ConfigManager.entry_delay);
         xpMode = configManager.getString(ConfigManager.entry_xpMode).toLowerCase();
         xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
         orbCount = configManager.getInt(ConfigManager.entry_orbCountPerPlayer);
+        eggRespawnChance = configManager.getDouble(ConfigManager.entry_eggRespawnChance);
         commandsList = configManager.getStringList(ConfigManager.entry_commandsList);
         doGiveXP = configManager.getBoolean(ConfigManager.entry_enableXP);
         doDecorationOrbs = configManager.getBoolean(ConfigManager.entry_enableDecorationOrbs);
@@ -136,6 +141,7 @@ public class EnderDragonDeathListener implements Listener {
         // The game automatically spawns an Egg when the Dragon is first killed
         // This plugin shouldn't spawn another one
         if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) return;
+        if (RANDOM.nextDouble() > eggRespawnChance) return;
 
         Location eggLocation = findSpawnEggLocation(theEnd);
         if (eggLocation == null) {
