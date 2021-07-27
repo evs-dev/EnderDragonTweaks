@@ -106,6 +106,11 @@ xp-per-player: 68
 # DEFAULT: 8
 orb-count-per-player: 8
 
+# The chance of the Dragon egg respawning upon Dragon defeat and when enable-egg-respawn is true
+# Range: 0.0-1.0 (0.0 = 0%, 1.0 = 100%)
+# DEFAULT: 1.0
+egg-respawn-chance: 1.0
+
 # The coordinates of the Dragon egg when it spawns
 # DEFAULT: 0, 0, 0 (this does not need to be configured by default since the portal coordinates are always (0, 0))
 egg-position:
