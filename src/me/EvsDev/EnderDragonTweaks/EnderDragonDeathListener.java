@@ -145,8 +145,8 @@ public class EnderDragonDeathListener implements Listener {
 
         Location eggLocation = findSpawnEggLocation(theEnd);
         if (eggLocation == null) {
-            Util.logWarning("Unable to find suitable position for Dragon Egg"
-                    + "(if this the Dragon's first death, this may be because the game has already spawned an Egg)"
+            Util.logWarning("Unable to find a suitable position for the Dragon Egg"
+                    + " (this may be because there is already an Egg here)"
                 );
             return;
         }
