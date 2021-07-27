@@ -22,12 +22,15 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class EnderDragonDeathListener implements Listener {
 
     private static int delayTicks = 80;
     private static String xpMode = "levels";
     private static int xpPerPlayer = 68;
     private static double eggRespawnChance = 1.0d;
+    private static String eggRespawnAnnouncement = "";
     private static int orbCount = 8;
     private static int playerRadius = 128;
     private static List<String> commandsList;
@@ -48,6 +51,7 @@ public class EnderDragonDeathListener implements Listener {
         xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
         orbCount = configManager.getInt(ConfigManager.entry_orbCountPerPlayer);
         eggRespawnChance = configManager.getDouble(ConfigManager.entry_eggRespawnChance);
+        eggRespawnAnnouncement = configManager.getString(ConfigManager.entry_eggRespawnAnnouncement);
         commandsList = configManager.getStringList(ConfigManager.entry_commandsList);
         doGiveXP = configManager.getBoolean(ConfigManager.entry_enableXP);
         doDecorationOrbs = configManager.getBoolean(ConfigManager.entry_enableDecorationOrbs);
@@ -145,9 +149,7 @@ public class EnderDragonDeathListener implements Listener {
 
         Location eggLocation = findSpawnEggLocation(theEnd);
         if (eggLocation == null) {
-            Util.logWarning("Unable to find a suitable position for the Dragon Egg"
-                    + " (this may be because there is already an Egg here)"
-                );
+            Util.logWarning("Unable to find a suitable position for the Dragon Egg");
             return;
         }
         eggLocation.getBlock().setType(Material.DRAGON_EGG);
@@ -159,6 +161,13 @@ public class EnderDragonDeathListener implements Listener {
                 eggLocation.getWorld().getName()
             )
         );
+        if (eggRespawnAnnouncement != null && eggRespawnAnnouncement.length() > 0)  {
+            Bukkit.broadcastMessage(
+                ChatColor.translateAlternateColorCodes(
+                    '&', eggRespawnAnnouncement.replace("<position>", Util.formatCoordinates(eggLocation))
+                )
+            );
+        }
     }
 
     private void sendDefeatAnnouncement(Player killer, EntityDamageEvent damage, World theEnd) {
@@ -203,7 +212,7 @@ public class EnderDragonDeathListener implements Listener {
         final Location searchLocation = new Location(
             theEnd,
             configuredEggLocationAsVector.getBlockX(),
-            0,
+            theEnd.getEnderDragonBattle().getEndPortalLocation().getY(),
             configuredEggLocationAsVector.getBlockZ()
         );
 
@@ -215,16 +224,10 @@ public class EnderDragonDeathListener implements Listener {
         final int startY = searchLocation.getBlockY();
         final int worldHeight = theEnd.getMaxHeight();
         // Search through the Y value of (0, 0) to find a place for the egg
-        for (int i = startY; i <= worldHeight; i++) {
+        for (int i = startY; i < worldHeight; i++) {
             searchLocation.setY(i);
-            if (searchLocation.getBlock().getType() != Material.BEDROCK) continue;
-
-            // The block is bedrock, so...
-            Location aboveLocation = searchLocation.clone().add(0, i == worldHeight ? 0 : 1, 0);
-            // Check if the above block is air
-            if (aboveLocation.getBlock().isEmpty()) {
-                // An air block above the portal bedrock pillar has been found
-                return aboveLocation;
+            if (searchLocation.getBlock().getType().isAir()) {
+                return searchLocation;
             }
         }
         // Unable to find anywhere for the Egg to go

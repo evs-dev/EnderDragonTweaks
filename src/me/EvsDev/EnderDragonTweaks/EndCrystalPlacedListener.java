@@ -50,10 +50,12 @@ public class EndCrystalPlacedListener implements Listener {
                 final long secondsSinceStartedCooldown = Instant.now().getEpochSecond() - cooldownStartEpochSeconds;
                 final long timeLeftInCooldown = respawnCooldownSeconds - secondsSinceStartedCooldown;
                 Util.logInfo("The Dragon respawn was cancelled because it's in cooldown. Time left: " + timeLeftInCooldown);
-                e.getPlayer().sendMessage(
-                    ChatColor.translateAlternateColorCodes('&', cooldownWarningMessage)
-                        .replace("<time-remaining>", Long.toString(timeLeftInCooldown))
-                );
+                if (cooldownWarningMessage != null && cooldownWarningMessage.length() > 0) {
+                    e.getPlayer().sendMessage(
+                        ChatColor.translateAlternateColorCodes('&', cooldownWarningMessage)
+                            .replace("<time-remaining>", Long.toString(timeLeftInCooldown))
+                    );
+                }
             }
         }
     }
@@ -84,7 +86,7 @@ public class EndCrystalPlacedListener implements Listener {
     }
 
     private static void broadcastMessage(String rawMessage) {
-        if (rawMessage.length() > 0)
+        if (rawMessage != null && rawMessage.length() > 0)
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', rawMessage));
     }
 

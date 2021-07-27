@@ -94,6 +94,10 @@ public class Util {
         return displayName ? killer.getDisplayName() : killer.getName();
     }
 
+    public static String formatCoordinates(Location location) {
+        return String.format("x=%s y=%s z=%s", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
     public static void logInfo(String message) {
         Bukkit.getLogger().info(Main.LOG_PREFIX + message);
     }

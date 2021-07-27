@@ -35,6 +35,7 @@ public class ConfigManager {
     public static final String entry_enableCommands = "enable-commands";
 
     public static final String entry_eggRespawnChance = "egg-respawn-chance";
+    public static final String entry_eggRespawnAnnouncement = "egg-respawn-announcement";
     public static final String entry_eggPositionSection = "egg-position.";
     public static final String entry_overrideEggY = entry_eggPositionSection + "override-y";
 

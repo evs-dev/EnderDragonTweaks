@@ -19,7 +19,6 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
 
 
 ### Config
-
 ```yaml
 # EnderDragonTweaks - Ender Dragon tweaks, mainly for SMP servers
 # by EvsDev (https://github.com/evs-dev)
@@ -107,9 +106,16 @@ xp-per-player: 68
 orb-count-per-player: 8
 
 # The chance of the Dragon egg respawning upon Dragon defeat and when enable-egg-respawn is true
-# Range: 0.0-1.0 (0.0 = 0%, 1.0 = 100%)
+# RANGE: 0.0-1.0 (0.0 = 0%, 1.0 = 100%)
 # DEFAULT: 1.0
 egg-respawn-chance: 1.0
+
+# The message broadcasted when the Dragon egg respawns (leave blank to have no message)
+# # Colour/formatting codes are supported using the ampersand (&) symbol (https://minecraft.gamepedia.com/Formatting_codes#Color_codes)
+# MACROS:
+#   <position>: x, y, and z coordinates of the Egg (e.g. "x=0 y=68 z=0")
+# DEFAULT: ""
+egg-respawn-announcement: ""
 
 # The coordinates of the Dragon egg when it spawns
 # DEFAULT: 0, 0, 0 (this does not need to be configured by default since the portal coordinates are always (0, 0))
