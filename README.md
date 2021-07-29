@@ -55,6 +55,9 @@ enable-defeat-announcement: true
 # Should commands be run when the Dragon is defeated?
 enable-commands: true
 
+# Should the Dragon's bossbar be customisable?
+enable-bossbar-customisation: false
+
 # |------------------------|
 # |        Settings        |
 # |------------------------|
@@ -159,6 +162,21 @@ commands:
 # E.g. (using the 3rd example command) "Congratulations dragonkiller495 and no-one else!"
 # DEFAULT: "no-one else"
 commands-no-participants-filler: "no-one else"
+
+# Customisation of the Dragon's bossbar
+bossbar-customisation:
+  # List of possible names to be displayed above the bossbar (leave empty for "Ender Dragon")
+  # DEFAULT: []
+  names:
+    #- "Bertha"
+  # The colour of the bossbar
+  # COLOURS: blue, green, pink, purple, red, white, yellow
+  # DEFAULT: pink
+  colour: pink
+  # The style of the bossbar
+  # STYLES: progress, notched_6, notched_10, notched_12, notched_20
+  # DEFAULT: progress
+  style: progress
 ```
 
 ### Installation

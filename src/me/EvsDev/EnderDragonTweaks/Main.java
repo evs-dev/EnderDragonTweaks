@@ -18,6 +18,9 @@ public class Main extends JavaPlugin {
         final EndCrystalPlacedListener respawnListener = new EndCrystalPlacedListener();
         if (respawnListener.shouldRegisterListener())
             pluginManager.registerEvents(respawnListener, this);
+        final EnderDragonChangePhaseListener spawnListener = new EnderDragonChangePhaseListener();
+        if (spawnListener.shouldRegisterListener())
+            pluginManager.registerEvents(spawnListener, this);
     }
 
     public static ConfigManager getConfigManager() {

@@ -33,11 +33,17 @@ public class ConfigManager {
     public static final String entry_enableEggRespawn = "enable-egg-respawn";
     public static final String entry_enableDefeatAnnouncement = "enable-defeat-announcement";
     public static final String entry_enableCommands = "enable-commands";
+    public static final String entry_enableBossbarCustomisation = "enable-bossbar-customisation";
 
     public static final String entry_eggRespawnChance = "egg-respawn-chance";
     public static final String entry_eggRespawnAnnouncement = "egg-respawn-announcement";
     public static final String entry_eggPositionSection = "egg-position.";
     public static final String entry_overrideEggY = entry_eggPositionSection + "override-y";
+
+    public static final String entry_bossbarCustomisationSection = "bossbar-customisation.";
+    public static final String entry_bossbarNames = entry_bossbarCustomisationSection + "names";
+    public static final String entry_bossbarColour = entry_bossbarCustomisationSection + "colour";
+    public static final String entry_bossbarStyle = entry_bossbarCustomisationSection + "style";
 
     // Increment this when updating the default config in any way
     // NOTE: The value of the version key in the config should ALWAYS BE 0 to allow the below code to work
