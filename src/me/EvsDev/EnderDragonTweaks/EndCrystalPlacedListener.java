@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,7 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class EndCrystalPlacedListener implements Listener {
+public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener {
 
     private static boolean isInCooldown;
     private static BukkitTask cooldownTask;
@@ -81,6 +80,7 @@ public class EndCrystalPlacedListener implements Listener {
         }
     }
 
+    @Override
     public boolean shouldRegisterListener() {
         return respawnCooldownTicks > 0;
     }

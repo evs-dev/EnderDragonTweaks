@@ -10,10 +10,9 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EnderDragonChangePhaseEvent;
 
-public class EnderDragonChangePhaseListener implements Listener {
+public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksListener {
 
     private static boolean doBossbarCustomisation;
     private static List<String> bossbarNames;
@@ -76,6 +75,7 @@ public class EnderDragonChangePhaseListener implements Listener {
         }
     }
 
+    @Override
     public boolean shouldRegisterListener() {
         return doBossbarCustomisation;
     }

@@ -13,14 +13,19 @@ public class Main extends JavaPlugin {
         configManager = new ConfigManager(this);
         if (!configManager.getBoolean(ConfigManager.entry_enabled)) return;
 
+        final AbstractEnderDragonTweaksListener[] listeners = {
+            new EnderDragonDeathListener(),
+            new EndCrystalPlacedListener(),
+            new EnderDragonChangePhaseListener(),
+        };
+
         final PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new EnderDragonDeathListener(), this);
-        final EndCrystalPlacedListener respawnListener = new EndCrystalPlacedListener();
-        if (respawnListener.shouldRegisterListener())
-            pluginManager.registerEvents(respawnListener, this);
-        final EnderDragonChangePhaseListener spawnListener = new EnderDragonChangePhaseListener();
-        if (spawnListener.shouldRegisterListener())
-            pluginManager.registerEvents(spawnListener, this);
+        for (int i = 0; i < listeners.length; i++) {
+            if (listeners[i].shouldRegisterListener()) {
+                pluginManager.registerEvents(listeners[i], this);
+                Util.logInfo("Enabling " + listeners[i].getClass().getSimpleName());
+            }
+        }
     }
 
     public static ConfigManager getConfigManager() {

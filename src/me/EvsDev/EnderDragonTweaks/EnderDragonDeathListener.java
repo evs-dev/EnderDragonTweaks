@@ -16,7 +16,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,7 +23,7 @@ import org.bukkit.util.Vector;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class EnderDragonDeathListener implements Listener {
+public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
 
     private static int delayTicks = 80;
     private static String xpMode = "levels";
@@ -232,5 +231,11 @@ public class EnderDragonDeathListener implements Listener {
         }
         // Unable to find anywhere for the Egg to go
         return null;
+    }
+
+    @Override
+    public boolean shouldRegisterListener() {
+        return doGiveXP || doSpawnEgg || doDefeatAnnouncement || doCommands
+            || Main.getConfigManager().getInt(ConfigManager.entry_dragonRespawnCooldown) > 0;
     }
 }
