@@ -8,6 +8,8 @@
 # - Every string that has macros has a comment above explaining them
 # - Every string requires quotes ("example string") unless the default does not have them
 # - 20 ticks = 1 second
+# - This plugin uses bStats. To opt out of its anonymous stats collection, find the bStats folder in your plugins folder and set enabled to false in its config
+# - (https://bstats.org/plugin/bukkit/EnderDragonTweaks/12284)
 
 # Config version - DO NOT CHANGE (is set by plugin)
 version: 0
