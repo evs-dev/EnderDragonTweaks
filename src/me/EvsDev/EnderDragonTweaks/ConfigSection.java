@@ -31,8 +31,12 @@ public class ConfigSection {
     }
 
     public boolean getBoolean(String name) {
+        final Object value = getValue(name);
+        if (value instanceof Integer) {
+            return ((Integer) value) > 0;
+        }
         try {
-            return (boolean) getValue(name);
+            return (boolean) value;
         } catch (ClassCastException e) {
             Util.logWarning("Config value " + name + ": " + e.getMessage());
             return false;
