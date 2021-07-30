@@ -11,7 +11,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         configManager = new ConfigManager(this);
-        if (!configManager.getBoolean(ConfigManager.entry_enabled)) return;
+        if (!configManager.MAIN_SECTION.isEnabled()) return;
 
         final AbstractEnderDragonTweaksListener[] listeners = {
             new EnderDragonDeathListener(),

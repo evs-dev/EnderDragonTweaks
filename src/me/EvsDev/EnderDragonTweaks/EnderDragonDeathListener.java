@@ -25,41 +25,63 @@ import net.md_5.bungee.api.ChatColor;
 
 public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
 
-    private static int delayTicks = 80;
-    private static String xpMode = "levels";
-    private static int xpPerPlayer = 68;
-    private static double eggRespawnChance = 1.0d;
-    private static String eggRespawnAnnouncement = "";
-    private static int orbCount = 8;
-    private static int playerRadius = 128;
-    private static List<String> commandsList;
-    private static boolean doGiveXP = true;
-    private static boolean doDecorationOrbs = true;
-    private static boolean doSpawnEgg = true;
-    private static boolean doDefeatAnnouncement = true;
-    private static boolean doCommands = true;
-    private static boolean overrideEggY = false;
+    private static int delayTicks;
+    private static int playerRadius;
+
+    private static boolean doGiveXP;
+    private static String xpMode;
+    private static int xpPerPlayer;
+
+    private static boolean doDecorationOrbs;
+    private static int orbCount;
+
+    private static boolean doSpawnEgg;
+    private static double eggRespawnChance;
+    private static String eggRespawnAnnouncement;
     private static Vector configuredEggLocationAsVector;
+    private static boolean overrideEggY;
+
+    private static boolean doDefeatAnnouncement;
+
+    private static boolean doCommands;
+    private static List<String> commandsList;
 
     private final Random RANDOM = new Random();
 
     public EnderDragonDeathListener() {
         final ConfigManager configManager = Main.getConfigManager();
-        delayTicks = configManager.getInt(ConfigManager.entry_delay);
-        xpMode = configManager.getString(ConfigManager.entry_xpMode).toLowerCase();
-        xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
-        orbCount = configManager.getInt(ConfigManager.entry_orbCountPerPlayer);
-        eggRespawnChance = configManager.getDouble(ConfigManager.entry_eggRespawnChance);
-        eggRespawnAnnouncement = configManager.getString(ConfigManager.entry_eggRespawnAnnouncement);
-        commandsList = configManager.getStringList(ConfigManager.entry_commandsList);
-        doGiveXP = configManager.getBoolean(ConfigManager.entry_enableXP);
-        doDecorationOrbs = configManager.getBoolean(ConfigManager.entry_enableDecorationOrbs);
-        doSpawnEgg = configManager.getBoolean(ConfigManager.entry_enableEggRespawn);
-        doDefeatAnnouncement = configManager.getBoolean(ConfigManager.entry_enableDefeatAnnouncement);
-        doCommands = configManager.getBoolean(ConfigManager.entry_enableCommands);
-        overrideEggY = configManager.getBoolean(ConfigManager.entry_overrideEggY);
-        configuredEggLocationAsVector = configManager.getEggLocationAsVector();
-        playerRadius = configManager.getInt(ConfigManager.entry_playerDistanceFromOrigin);
+        delayTicks = configManager.MAIN_SECTION.getInt("delay");
+        playerRadius = configManager.MAIN_SECTION.getInt("max-player-distance-from-end-centre");
+
+        doGiveXP = configManager.FEATURE_XP_DROP.isEnabled();
+        if (doGiveXP) {
+            xpMode = configManager.FEATURE_XP_DROP.getString("mode").toLowerCase();
+            xpPerPlayer = configManager.FEATURE_XP_DROP.getInt("xp-per-player");
+        }
+
+        doDecorationOrbs = configManager.FEATURE_DECORATION_ORBS.isEnabled();
+        if (doDecorationOrbs) {
+            orbCount = configManager.FEATURE_DECORATION_ORBS.getInt("orb-count-per-player");
+        }
+
+        doSpawnEgg = configManager.FEATURE_EGG_RESPAWN.isEnabled();
+        if (doSpawnEgg) {
+            eggRespawnChance = configManager.FEATURE_EGG_RESPAWN.getDouble("chance");
+            eggRespawnAnnouncement = configManager.FEATURE_EGG_RESPAWN.getString("announcement");
+            configuredEggLocationAsVector = new Vector(
+                configManager.FEATURE_EGG_RESPAWN.getInt("position.x"),
+                configManager.FEATURE_EGG_RESPAWN.getInt("position.y"),
+                configManager.FEATURE_EGG_RESPAWN.getInt("position.z")
+            );
+            overrideEggY = configManager.FEATURE_EGG_RESPAWN.getBoolean("position.override-y");
+        }
+
+        doDefeatAnnouncement = configManager.FEATURE_DEFEAT_ANNOUNCEMENT.isEnabled();
+
+        doCommands = configManager.FEATURE_CUSTOM_COMMANDS.isEnabled();
+        if (doCommands) {
+            commandsList = configManager.FEATURE_CUSTOM_COMMANDS.getStringList("commands");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -90,7 +112,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 if (doCommands) {
                     final List<Player> allParticipants = Util.getPlayersInEndCentreRadius(
                         theEnd,
-                        Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
+                        playerRadius
                     );
                     final List<String> participantNames = allParticipants
                         .stream().map(p -> p.getName()).collect(Collectors.toList());
@@ -173,7 +195,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         final String killerName = Util.getKillerName(killer, damage, true);
         final List<String> fightParticipantNames = Util.getPlayersInEndCentreRadius(
             theEnd,
-            Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
+            playerRadius
         ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
 
         Bukkit.broadcastMessage(
@@ -187,7 +209,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         participantNames.remove(killerName);
         participantDisplayNames.remove(killerDisplayName);
         final String participantsString = participantDisplayNames.size() > 0 ?
-            Util.formatParticipantsList(participantDisplayNames) : Main.getConfigManager().getString(ConfigManager.entry_commandsNoParticipantsFiller);
+            Util.formatParticipantsList(participantDisplayNames) : Main.getConfigManager().FEATURE_CUSTOM_COMMANDS.getString("no-participants-filler");
 
         Util.logInfo("Executing " + commandsList.size() + " command(s)");
 
@@ -236,6 +258,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
     @Override
     public boolean shouldRegisterListener() {
         return doGiveXP || doSpawnEgg || doDefeatAnnouncement || doCommands
-            || Main.getConfigManager().getInt(ConfigManager.entry_dragonRespawnCooldown) > 0;
+            || (Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled()
+                && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0);
     }
 }

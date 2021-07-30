@@ -19,6 +19,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
     private static boolean isInCooldown;
     private static BukkitTask cooldownTask;
     private static long cooldownStartEpochSeconds;
+    private static boolean doRespawnCooldown;
     private static int respawnCooldownTicks;
     private static int respawnCooldownSeconds;
     private static String enterCooldownMessage;
@@ -27,11 +28,14 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
 
     public EndCrystalPlacedListener() {
         final ConfigManager configManager = Main.getConfigManager();
-        respawnCooldownTicks = configManager.getInt(ConfigManager.entry_dragonRespawnCooldown);
-        respawnCooldownSeconds = respawnCooldownTicks / 20; // 20 ticks in 1 second
-        enterCooldownMessage = configManager.getString(ConfigManager.entry_dragonRespawnCooldownEnterAnnouncement);
-        leaveCooldownMessage = configManager.getString(ConfigManager.entry_dragonRespawnCooldownLeaveAnnouncement);
-        cooldownWarningMessage = configManager.getString(ConfigManager.entry_dragonRespawnCooldownWarning);
+        doRespawnCooldown = configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled();
+        if (doRespawnCooldown) {
+            respawnCooldownTicks = configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown");
+            respawnCooldownSeconds = respawnCooldownTicks / 20; // 20 ticks in 1 second
+            enterCooldownMessage = configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.getString("enter-announcement");
+            leaveCooldownMessage = configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.getString("leave-announcement");
+            cooldownWarningMessage = configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.getString("warning");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -48,7 +52,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
                 e.setCancelled(true);
                 final long secondsSinceStartedCooldown = Instant.now().getEpochSecond() - cooldownStartEpochSeconds;
                 final long timeLeftInCooldown = respawnCooldownSeconds - secondsSinceStartedCooldown;
-                Util.logInfo("The Dragon respawn was cancelled because it's in cooldown. Time left: " + timeLeftInCooldown);
+                Util.logInfo("The Dragon respawn was cancelled because it's in cooldown. Time left: " + timeLeftInCooldown + " seconds");
                 if (cooldownWarningMessage != null && cooldownWarningMessage.length() > 0) {
                     e.getPlayer().sendMessage(
                         ChatColor.translateAlternateColorCodes('&', cooldownWarningMessage)
@@ -82,7 +86,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
 
     @Override
     public boolean shouldRegisterListener() {
-        return respawnCooldownTicks > 0;
+        return doRespawnCooldown && respawnCooldownTicks > 0;
     }
 
     private static void broadcastMessage(String rawMessage) {

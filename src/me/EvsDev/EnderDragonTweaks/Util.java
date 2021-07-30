@@ -38,8 +38,8 @@ public class Util {
 
         final String message = ChatColor.translateAlternateColorCodes(
             '&',
-            config.getString(
-                multipleParticipants ? ConfigManager.entry_defeatMessageMultipleParticipants : ConfigManager.entry_defeatMessageOneParticipant
+            config.FEATURE_DEFEAT_ANNOUNCEMENT.getString(
+                multipleParticipants ? "multiple-participants" : "one-participant"
             )
         );
 

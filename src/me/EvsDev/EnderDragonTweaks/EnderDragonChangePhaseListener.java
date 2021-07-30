@@ -24,10 +24,12 @@ public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksLis
 
     public EnderDragonChangePhaseListener() {
         final ConfigManager configManager = Main.getConfigManager();
-        doBossbarCustomisation = configManager.getBoolean(ConfigManager.entry_enableBossbarCustomisation);
-        bossbarNames = configManager.getStringList(ConfigManager.entry_bossbarNames);
-        bossbarColour = configManager.getString(ConfigManager.entry_bossbarColour).toUpperCase();
-        bossbarStyle = configManager.getString(ConfigManager.entry_bossbarStyle).toUpperCase();
+        doBossbarCustomisation = configManager.FEATURE_BOSSBAR_CUSTOMISATION.isEnabled();
+        if (doBossbarCustomisation) {
+            bossbarNames = configManager.FEATURE_BOSSBAR_CUSTOMISATION.getStringList("names");
+            bossbarColour = configManager.FEATURE_BOSSBAR_CUSTOMISATION.getString("colour").toUpperCase();
+            bossbarStyle = configManager.FEATURE_BOSSBAR_CUSTOMISATION.getString("style").toUpperCase();
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
