@@ -1,6 +1,7 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -15,43 +16,72 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class EnderDragonDeathListener implements Listener {
+import net.md_5.bungee.api.ChatColor;
 
-    private static int delayTicks = 80;
-    private static String xpMode = "levels";
-    private static int xpPerPlayer = 68;
-    private static int orbCount = 8;
-    private static int playerRadius = 128;
-    private static List<String> commandsList;
-    private static boolean doGiveXP = true;
-    private static boolean doDecorationOrbs = true;
-    private static boolean doSpawnEgg = true;
-    private static boolean doDefeatAnnouncement = true;
-    private static boolean doCommands = true;
-    private static boolean overrideEggY = false;
+public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
+
+    private static int delayTicks;
+    private static int playerRadius;
+
+    private static boolean doGiveXP;
+    private static String xpMode;
+    private static int xpPerPlayer;
+
+    private static boolean doDecorationOrbs;
+    private static int orbCount;
+
+    private static boolean doSpawnEgg;
+    private static double eggRespawnChance;
+    private static String eggRespawnAnnouncement;
     private static Vector configuredEggLocationAsVector;
+    private static boolean overrideEggY;
+
+    private static boolean doDefeatAnnouncement;
+
+    private static boolean doCommands;
+    private static List<String> commandsList;
+
+    private final Random RANDOM = new Random();
 
     public EnderDragonDeathListener() {
-        ConfigManager configManager = Main.getConfigManager();
-        delayTicks = configManager.getInt(ConfigManager.entry_delay);
-        xpMode = configManager.getString(ConfigManager.entry_xpMode).toLowerCase();
-        xpPerPlayer = configManager.getInt(ConfigManager.entry_xpPerPlayer);
-        orbCount = configManager.getInt(ConfigManager.entry_orbCountPerPlayer);
-        commandsList = configManager.getStringList(ConfigManager.entry_commandsList);
-        doGiveXP = configManager.getBoolean(ConfigManager.entry_enableXP);
-        doDecorationOrbs = configManager.getBoolean(ConfigManager.entry_enableDecorationOrbs);
-        doSpawnEgg = configManager.getBoolean(ConfigManager.entry_enableEggRespawn);
-        doDefeatAnnouncement = configManager.getBoolean(ConfigManager.entry_enableDefeatAnnouncement);
-        doCommands = configManager.getBoolean(ConfigManager.entry_enableCommands);
-        overrideEggY = configManager.getBoolean(ConfigManager.entry_overrideEggY);
-        configuredEggLocationAsVector = configManager.getEggLocationAsVector();
-        playerRadius = configManager.getInt(ConfigManager.entry_playerDistanceFromOrigin);
+        final ConfigManager configManager = Main.getConfigManager();
+        delayTicks = configManager.MAIN_SECTION.getInt("delay");
+        playerRadius = configManager.MAIN_SECTION.getInt("max-player-distance-from-end-centre");
+
+        doGiveXP = configManager.FEATURE_XP_DROP.isEnabled();
+        if (doGiveXP) {
+            xpMode = configManager.FEATURE_XP_DROP.getString("mode").toLowerCase();
+            xpPerPlayer = configManager.FEATURE_XP_DROP.getInt("xp-per-player");
+        }
+
+        doDecorationOrbs = configManager.FEATURE_DECORATION_ORBS.isEnabled();
+        if (doDecorationOrbs) {
+            orbCount = configManager.FEATURE_DECORATION_ORBS.getInt("orb-count-per-player");
+        }
+
+        doSpawnEgg = configManager.FEATURE_EGG_RESPAWN.isEnabled();
+        if (doSpawnEgg) {
+            eggRespawnChance = configManager.FEATURE_EGG_RESPAWN.getDouble("chance");
+            eggRespawnAnnouncement = configManager.FEATURE_EGG_RESPAWN.getString("announcement");
+            configuredEggLocationAsVector = new Vector(
+                configManager.FEATURE_EGG_RESPAWN.getInt("position.x"),
+                configManager.FEATURE_EGG_RESPAWN.getInt("position.y"),
+                configManager.FEATURE_EGG_RESPAWN.getInt("position.z")
+            );
+            overrideEggY = configManager.FEATURE_EGG_RESPAWN.getBoolean("position.override-y");
+        }
+
+        doDefeatAnnouncement = configManager.FEATURE_DEFEAT_ANNOUNCEMENT.isEnabled();
+
+        doCommands = configManager.FEATURE_CUSTOM_COMMANDS.isEnabled();
+        if (doCommands) {
+            commandsList = configManager.FEATURE_CUSTOM_COMMANDS.getStringList("commands");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -63,23 +93,26 @@ public class EnderDragonDeathListener implements Listener {
 
         if (theEnd.getEnvironment() != Environment.THE_END) return;
 
-        e.setDroppedExp(0);
+        if (doGiveXP)
+            e.setDroppedExp(0);
 
         theEnd.spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, dragonEntity.getLocation(), 1200, 2, 1, 2, 1);
+
+        EndCrystalPlacedListener.startCooldown();
 
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (doDefeatAnnouncement)
+                    sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
                 if (doGiveXP)
                     giveXP(dragonEntity, theEnd);
                 if (doSpawnEgg)
                     spawnEgg(theEnd);
-                if (doDefeatAnnouncement)
-                    sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
                 if (doCommands) {
                     final List<Player> allParticipants = Util.getPlayersInEndCentreRadius(
                         theEnd,
-                        Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
+                        playerRadius
                     );
                     final List<String> participantNames = allParticipants
                         .stream().map(p -> p.getName()).collect(Collectors.toList());
@@ -133,12 +166,11 @@ public class EnderDragonDeathListener implements Listener {
         // The game automatically spawns an Egg when the Dragon is first killed
         // This plugin shouldn't spawn another one
         if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) return;
+        if (RANDOM.nextDouble() > eggRespawnChance) return;
 
         Location eggLocation = findSpawnEggLocation(theEnd);
         if (eggLocation == null) {
-            Util.logWarning("Unable to find suitable position for Dragon Egg"
-                    + "(if this the Dragon's first death, this may be because the game has already spawned an Egg)"
-                );
+            Util.logWarning("Unable to find a suitable position for the Dragon Egg");
             return;
         }
         eggLocation.getBlock().setType(Material.DRAGON_EGG);
@@ -150,13 +182,20 @@ public class EnderDragonDeathListener implements Listener {
                 eggLocation.getWorld().getName()
             )
         );
+        if (eggRespawnAnnouncement != null && eggRespawnAnnouncement.length() > 0)  {
+            Bukkit.broadcastMessage(
+                ChatColor.translateAlternateColorCodes(
+                    '&', eggRespawnAnnouncement.replace("<position>", Util.formatCoordinates(eggLocation))
+                )
+            );
+        }
     }
 
     private void sendDefeatAnnouncement(Player killer, EntityDamageEvent damage, World theEnd) {
         final String killerName = Util.getKillerName(killer, damage, true);
         final List<String> fightParticipantNames = Util.getPlayersInEndCentreRadius(
             theEnd,
-            Main.getConfigManager().getInt(ConfigManager.entry_playerDistanceFromOrigin)
+            playerRadius
         ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
 
         Bukkit.broadcastMessage(
@@ -170,7 +209,7 @@ public class EnderDragonDeathListener implements Listener {
         participantNames.remove(killerName);
         participantDisplayNames.remove(killerDisplayName);
         final String participantsString = participantDisplayNames.size() > 0 ?
-            Util.formatParticipantsList(participantDisplayNames) : Main.getConfigManager().getString(ConfigManager.entry_commandsNoParticipantsFiller);
+            Util.formatParticipantsList(participantDisplayNames) : Main.getConfigManager().FEATURE_CUSTOM_COMMANDS.getString("no-participants-filler");
 
         Util.logInfo("Executing " + commandsList.size() + " command(s)");
 
@@ -194,7 +233,7 @@ public class EnderDragonDeathListener implements Listener {
         final Location searchLocation = new Location(
             theEnd,
             configuredEggLocationAsVector.getBlockX(),
-            0,
+            theEnd.getEnderDragonBattle().getEndPortalLocation().getY(),
             configuredEggLocationAsVector.getBlockZ()
         );
 
@@ -206,19 +245,20 @@ public class EnderDragonDeathListener implements Listener {
         final int startY = searchLocation.getBlockY();
         final int worldHeight = theEnd.getMaxHeight();
         // Search through the Y value of (0, 0) to find a place for the egg
-        for (int i = startY; i <= worldHeight; i++) {
+        for (int i = startY; i < worldHeight; i++) {
             searchLocation.setY(i);
-            if (searchLocation.getBlock().getType() != Material.BEDROCK) continue;
-
-            // The block is bedrock, so...
-            Location aboveLocation = searchLocation.clone().add(0, i == worldHeight ? 0 : 1, 0);
-            // Check if the above block is air
-            if (aboveLocation.getBlock().isEmpty()) {
-                // An air block above the portal bedrock pillar has been found
-                return aboveLocation;
+            if (searchLocation.getBlock().getType().isAir()) {
+                return searchLocation;
             }
         }
         // Unable to find anywhere for the Egg to go
         return null;
+    }
+
+    @Override
+    public boolean shouldRegisterListener() {
+        return doGiveXP || doSpawnEgg || doDefeatAnnouncement || doCommands
+            || (Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled()
+                && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0);
     }
 }

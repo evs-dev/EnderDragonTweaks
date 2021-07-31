@@ -15,8 +15,9 @@ public class Util {
 
     public static List<Player> getPlayersInEndCentreRadius(World theEnd, int radius) {
         final Location endCentre = new Location(theEnd, 0, 65, 0);
+        final int radiusSqrd = radius * radius;
         return theEnd.getPlayers().stream()
-            .filter(p -> p.getLocation().distance(endCentre) <= radius)
+            .filter(p -> p.getLocation().distanceSquared(endCentre) <= radiusSqrd)
             .collect(Collectors.toList());
     }
 
@@ -37,8 +38,8 @@ public class Util {
 
         final String message = ChatColor.translateAlternateColorCodes(
             '&',
-            config.getString(
-                multipleParticipants ? ConfigManager.entry_defeatMessageMultipleParticipants : ConfigManager.entry_defeatMessageOneParticipant
+            config.FEATURE_DEFEAT_ANNOUNCEMENT.getString(
+                multipleParticipants ? "multiple-participants" : "one-participant"
             )
         );
 
@@ -91,6 +92,10 @@ public class Util {
             return damage.getCause().toString().replace('_', ' ');
         }
         return displayName ? killer.getDisplayName() : killer.getName();
+    }
+
+    public static String formatCoordinates(Location location) {
+        return String.format("x=%s y=%s z=%s", location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public static void logInfo(String message) {
