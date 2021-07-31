@@ -103,8 +103,8 @@ custom-commands:
   #   <killer-display-name>: display name of the player who killed the Dragon (may be the same as <killer>, or e.g. the nickname of the player)
   #   <participants-list>: list of players within max-player-distance-from-end-centre upon Dragon defeat (e.g. "p1, p2, & p3") (EXCEPT the killer)
   #   <each-participant>: the command will be run individually for players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
-  # DEFAULT: [] (REMOVE THE [] TO ADD COMMANDS, AND ADD IT AGAIN IF YOU REMOVE ALL COMMANDS)
-  commands: []
+  # DEFAULT: []
+  commands:
     #- "give <killer> minecraft:diamond 4"
     #- "give <each-participant> minecraft:iron_ingot 8"
     #- "say Congratulations <killer-display-name> and <participants-list>!"
@@ -138,8 +138,8 @@ dragon-respawn-cooldown:
 
   # The delay in ticks before the Dragon can be respawned after having been defeated
   # The cooldown is reset when the server is restarted
-  # DEFAULT: 0
-  cooldown: 0
+  # DEFAULT: 6000 (5 minutes)
+  cooldown: 6000
 
   # The message broadcasted when the Dragon respawn cooldown begins (if there is one)
   # MACROS:
