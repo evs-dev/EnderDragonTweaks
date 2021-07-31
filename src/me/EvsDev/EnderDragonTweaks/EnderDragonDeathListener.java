@@ -103,12 +103,12 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (doDefeatAnnouncement)
+                    sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
                 if (doGiveXP)
                     giveXP(dragonEntity, theEnd);
                 if (doSpawnEgg)
                     spawnEgg(theEnd);
-                if (doDefeatAnnouncement)
-                    sendDefeatAnnouncement(dragonEntity.getKiller(), dragonEntity.getLastDamageCause(), theEnd);
                 if (doCommands) {
                     final List<Player> allParticipants = Util.getPlayersInEndCentreRadius(
                         theEnd,
