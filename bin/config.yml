@@ -138,8 +138,8 @@ dragon-respawn-cooldown:
 
   # The delay in ticks before the Dragon can be respawned after having been defeated
   # The cooldown is reset when the server is restarted
-  # DEFAULT: 0
-  cooldown: 0
+  # DEFAULT: 6000 (5 minutes)
+  cooldown: 6000
 
   # The message broadcasted when the Dragon respawn cooldown begins (if there is one)
   # MACROS:
