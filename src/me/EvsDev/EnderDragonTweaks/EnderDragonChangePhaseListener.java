@@ -12,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EnderDragonChangePhaseEvent;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksListener {
 
     private static boolean doBossbarCustomisation;
@@ -44,7 +46,7 @@ public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksLis
         final BossBar bossbar = e.getEntity().getWorld().getEnderDragonBattle().getBossBar();
         if (bossbarNames.size() > 0) {
             final String name = bossbarNames.get(RANDOM.nextInt(bossbarNames.size()));
-            bossbar.setTitle(name);
+            bossbar.setTitle(ChatColor.translateAlternateColorCodes('&', name));
             Util.logInfo("Set Dragon bossbar name to " + name);
         }
         if (bossbarColour.length() > 0) {
