@@ -1,6 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -95,6 +97,8 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
         if (doGiveXP)
             e.setDroppedExp(0);
+
+        Main.getStatisticsManager().setStat("dragonDeathCount", Main.getStatisticsManager().getStatInt("dragonDeathCount") + 1);
 
         theEnd.spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, dragonEntity.getLocation(), 1200, 2, 1, 2, 1);
 
@@ -260,5 +264,12 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         return doGiveXP || doSpawnEgg || doDefeatAnnouncement || doCommands
             || (Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled()
                 && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0);
+    }
+
+    @Override
+    public Map<String, Object> getStatisticsDefaults() {
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        defaults.put("dragonDeathCount", 0);
+        return defaults;
     }
 }
