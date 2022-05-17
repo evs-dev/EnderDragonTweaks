@@ -1,6 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.World.Environment;
@@ -82,6 +84,12 @@ public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksLis
     @Override
     public boolean shouldRegisterListener() {
         return doBossbarCustomisation;
+    }
+
+    @Override
+    public Map<String, Object> getStatisticsDefaults() {
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        return defaults;
     }
 
 }

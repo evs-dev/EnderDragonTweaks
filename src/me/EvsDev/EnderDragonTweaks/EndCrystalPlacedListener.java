@@ -1,6 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -87,6 +89,12 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
     @Override
     public boolean shouldRegisterListener() {
         return doRespawnCooldown && respawnCooldownTicks > 0;
+    }
+
+    @Override
+    public Map<String, Object> getStatisticsDefaults() {
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        return defaults;
     }
 
     private static void broadcastMessage(String rawMessage) {

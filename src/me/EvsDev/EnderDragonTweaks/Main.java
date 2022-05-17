@@ -31,6 +31,12 @@ public class Main extends JavaPlugin {
             if (listeners[i].shouldRegisterListener()) {
                 pluginManager.registerEvents(listeners[i], this);
                 Util.logInfo("Enabling " + listeners[i].getClass().getSimpleName());
+
+                final Map<String, Object> statisticsDefaults = listeners[i].getStatisticsDefaults();
+                for (Map.Entry<String, Object> entry : statisticsDefaults.entrySet()) {
+                    if (statisticsManager.isSet(entry.getKey())) continue;
+                    statisticsManager.setStat(entry.getKey(), entry.getValue());
+                }
             }
         }
 
