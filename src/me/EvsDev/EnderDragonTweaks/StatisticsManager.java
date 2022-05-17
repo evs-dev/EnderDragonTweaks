@@ -58,6 +58,10 @@ public class StatisticsManager {
         return statsConfig.getString(statName);
     }
 
+    public Object getStatObject(String statName) {
+        return statsConfig.get(statName);
+    }
+
     public boolean isSet(String statName) {
         return statsConfig.isSet(statName);
     }

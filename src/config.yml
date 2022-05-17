@@ -7,6 +7,7 @@
 # - Macros are placeholders you can include in strings that are replaced by the plugin
 # - Every string that has macros has a comment above explaining them
 # - Every string requires quotes ("example string") unless the default does not have them
+# - You can use any statistic as a placeholder, e.g. <stat-dragonDeathCount> or <stat-killerLeaderboard.1>
 # - 20 ticks = 1 second
 # - This plugin uses bStats. To opt out of its anonymous stats collection, find the bStats folder in your plugins folder and set enabled to false in its config
 # - (https://bstats.org/plugin/bukkit/EnderDragonTweaks/12284)

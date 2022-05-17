@@ -189,7 +189,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         if (eggRespawnAnnouncement != null && eggRespawnAnnouncement.length() > 0)  {
             Bukkit.broadcastMessage(
                 ChatColor.translateAlternateColorCodes(
-                    '&', eggRespawnAnnouncement.replace("<position>", Util.formatCoordinates(eggLocation))
+                    '&', new PlaceholderReplacer().add("<position>", Util.formatCoordinates(eggLocation)).replaceIn(eggRespawnAnnouncement)
                 )
             );
         }
@@ -217,11 +217,13 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
         Util.logInfo("Executing " + commandsList.size() + " command(s)");
 
+        final PlaceholderReplacer cmdReplacer = new PlaceholderReplacer()
+            .add("<killer>", killerName)
+            .add("<killer-display-name>", killerDisplayName)
+            .add("<participants-list>", participantsString);
+
         for (String command : commandsList) {
-            final String cmd = command
-                .replace("<killer>", killerName)
-                .replace("<killer-display-name>", killerDisplayName)
-                .replace("<participants-list>", participantsString);
+            final String cmd = cmdReplacer.replaceIn(command);
             if (cmd.contains("<each-participant>")) {
                 // Run the command for each participant individually
                 for (String participantName : participantNames) {

@@ -59,9 +59,10 @@ public class Util {
             }
         }
 
-        return message
-            .replace("<killer>", killerName)
-            .replace("<participants>", helpingParticipants);
+        return new PlaceholderReplacer()
+            .add("<killer>", killerName)
+            .add("<participants>", helpingParticipants)
+            .replaceIn(message);
     }
 
     public static String formatParticipantsList(List<String> list) {
