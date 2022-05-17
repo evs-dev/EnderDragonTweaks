@@ -1,0 +1,13 @@
+# EnderDragonTweaks - Ender Dragon tweaks, mainly for SMP servers
+# by EvsDev (https://github.com/evs-dev)
+# contributors: https://github.com/evs-dev/EnderDragonTweaks/graphs/contributors
+# STATISTICS FILE
+# ❗ IMPORTANT INFO: ❗
+# - Statistics are stored in this file
+# - Tampering with any part of this file may result in it breaking
+# - This is NOT a configuration file
+# - Options for statistics are in config.yml
+# - All statistics can be used as placeholders in config.yml
+
+# Statistics file version - DO NOT CHANGE (is set by plugin)
+version: 0

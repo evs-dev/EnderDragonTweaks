@@ -158,3 +158,6 @@ dragon-respawn-cooldown:
   #   <time-remaining>: number of seconds before the cooldown ends
   # DEFAULT: "The Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
   warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+
+statistics:
+  enabled: false

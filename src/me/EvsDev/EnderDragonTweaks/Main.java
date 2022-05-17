@@ -11,11 +11,14 @@ public class Main extends JavaPlugin {
 
     public static final String LOG_PREFIX = "[EnderDragonTweaks] ";
     private static ConfigManager configManager;
+    private static StatisticsManager statisticsManager;
 
     @Override
     public void onEnable() {
         configManager = new ConfigManager(this);
         if (!configManager.MAIN_SECTION.isEnabled()) return;
+
+        statisticsManager = new StatisticsManager();
 
         final AbstractEnderDragonTweaksListener[] listeners = {
             new EnderDragonDeathListener(),
@@ -56,6 +59,12 @@ public class Main extends JavaPlugin {
             }));
         }
 
+        if (configManager.FEATURE_STATISTICS.isEnabled()) {
+            metrics.addCustomChart(new Metrics.SimplePie("statistics_enabled", () -> {
+                return configManager.FEATURE_STATISTICS.isEnabled() ? "enabled" : "disabled";
+            }));
+        }
+
         final Map<String, ConfigSection> featuresToChart = new HashMap<String, ConfigSection>();
         featuresToChart.put("XP Drop", configManager.FEATURE_XP_DROP);
         featuresToChart.put("Decoration Orbs", configManager.FEATURE_DECORATION_ORBS);
@@ -64,6 +73,7 @@ public class Main extends JavaPlugin {
         featuresToChart.put("Custom Commands", configManager.FEATURE_CUSTOM_COMMANDS);
         featuresToChart.put("Bossbar Customisation", configManager.FEATURE_BOSSBAR_CUSTOMISATION);
         featuresToChart.put("Dragon Respawn Cooldown", configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN);
+        featuresToChart.put("Statistics", configManager.FEATURE_STATISTICS);
 
         metrics.addCustomChart(new Metrics.SimpleBarChart("features_popularity", new Callable<Map<String, Integer>>() {
             @Override
@@ -80,6 +90,10 @@ public class Main extends JavaPlugin {
 
     public static ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public static StatisticsManager getStatisticsManager() {
+        return statisticsManager;
     }
 
 }
