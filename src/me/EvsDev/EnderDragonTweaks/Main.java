@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +22,8 @@ public class Main extends JavaPlugin {
         if (!configManager.MAIN_SECTION.isEnabled()) return;
 
         statisticsManager = new StatisticsManager();
+
+        //setupCommand("respawndragon", new RespawnDragonCommand(), null);
 
         final AbstractEnderDragonTweaksListener[] listeners = {
             new EnderDragonDeathListener(),
@@ -100,6 +105,13 @@ public class Main extends JavaPlugin {
 
     public static StatisticsManager getStatisticsManager() {
         return statisticsManager;
+    }
+
+    @SuppressWarnings("unused")
+    private void setupCommand(String name, CommandExecutor executor, TabCompleter tabCompleter) {
+        final PluginCommand command = getCommand(name);
+        command.setExecutor(executor);
+        command.setTabCompleter(tabCompleter);
     }
 
 }
