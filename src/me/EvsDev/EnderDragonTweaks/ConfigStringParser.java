@@ -5,28 +5,30 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlaceholderReplacer {
+import net.md_5.bungee.api.ChatColor;
 
-    final Map<String, String> placeholders;
+public class ConfigStringParser {
+
+    private final Map<String, String> placeholders;
     // e.g. <stat-wr.ty>
-    final Pattern statPlaceholderPattern = Pattern.compile("<stat\\-([a-zA-Z][[\\w+]|[\\.*]]+)>");
+    private static final Pattern STAT_PLACEHOLDER_PATTERN = Pattern.compile("<stat\\-([a-zA-Z][[\\w+]|[\\.*]]+)>");
 
-    public PlaceholderReplacer() {
+    public ConfigStringParser() {
         placeholders = new HashMap<>();
     }
 
-    public PlaceholderReplacer add(String placeholder, String with) {
+    public ConfigStringParser addPlaceholder(String placeholder, String with) {
         placeholders.put(placeholder, with);
         return this;
     }
 
-    public String replaceIn(String string) {
+    public String parse(String string) {
         // Replace added this
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             string = string.replaceAll(entry.getKey(), entry.getValue());
         }
         // Replace all <stat-statName>
-        final Matcher statPlaceholderMatcher = statPlaceholderPattern.matcher(string);
+        final Matcher statPlaceholderMatcher = STAT_PLACEHOLDER_PATTERN.matcher(string);
         while (statPlaceholderMatcher.find()) {
             final String statPlaceholder = statPlaceholderMatcher.group(0);
             final String statPath = statPlaceholderMatcher.group(1);
@@ -34,7 +36,7 @@ public class PlaceholderReplacer {
             if (statValue == null) statValue = "";
             string = string.replaceAll(statPlaceholder, statValue.toString());
         }
-        return string;
+        return ChatColor.translateAlternateColorCodes('&', string);
     }
 
 }

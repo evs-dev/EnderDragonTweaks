@@ -23,8 +23,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
 
     private static int delayTicks;
@@ -188,9 +186,9 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         );
         if (eggRespawnAnnouncement != null && eggRespawnAnnouncement.length() > 0)  {
             Bukkit.broadcastMessage(
-                ChatColor.translateAlternateColorCodes(
-                    '&', new PlaceholderReplacer().add("<position>", Util.formatCoordinates(eggLocation)).replaceIn(eggRespawnAnnouncement)
-                )
+                new ConfigStringParser()
+                    .addPlaceholder("<position>", Util.formatCoordinates(eggLocation))
+                    .parse(eggRespawnAnnouncement)
             );
         }
     }
@@ -217,13 +215,13 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
         Util.logInfo("Executing " + commandsList.size() + " command(s)");
 
-        final PlaceholderReplacer cmdReplacer = new PlaceholderReplacer()
-            .add("<killer>", killerName)
-            .add("<killer-display-name>", killerDisplayName)
-            .add("<participants-list>", participantsString);
+        final ConfigStringParser cmdParser = new ConfigStringParser()
+            .addPlaceholder("<killer>", killerName)
+            .addPlaceholder("<killer-display-name>", killerDisplayName)
+            .addPlaceholder("<participants-list>", participantsString);
 
         for (String command : commandsList) {
-            final String cmd = cmdReplacer.replaceIn(command);
+            final String cmd = cmdParser.parse(command);
             if (cmd.contains("<each-participant>")) {
                 // Run the command for each participant individually
                 for (String participantName : participantNames) {
