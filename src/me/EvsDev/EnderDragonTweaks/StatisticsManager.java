@@ -23,6 +23,7 @@ public class StatisticsManager {
         if (!statsFileExisted) {
             Main.getPlugin(Main.class).saveResource("statistics.yml", false);
             Util.logInfo("Created statistics.yml");
+            ConfigManager.checkConfigVersion(statsFile, statsFileExisted, 0, 1, "statistics file");
         }
 
         statsConfig = new YamlConfiguration();
@@ -34,7 +35,7 @@ public class StatisticsManager {
             couldNotLoad = true;
         }
 
-        if (!couldNotLoad) {
+        if (statsFileExisted && !couldNotLoad) {
             ConfigManager.checkConfigVersion(statsFile, statsFileExisted, getStatInt("version"), 1, "statistics file");
         }
     }
