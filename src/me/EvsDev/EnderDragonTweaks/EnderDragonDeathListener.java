@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
@@ -96,7 +97,8 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         if (doGiveXP)
             e.setDroppedExp(0);
 
-        Main.getStatisticsManager().setStat("dragonDeathCount", Main.getStatisticsManager().getStatInt("dragonDeathCount") + 1);
+        if (Main.getConfigManager().FEATURE_STATISTICS.isEnabled())
+            setStats(dragonEntity);
 
         theEnd.spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, dragonEntity.getLocation(), 1200, 2, 1, 2, 1);
 
@@ -135,6 +137,44 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 }
             }
         }.runTaskLater(Main.getPlugin(Main.class), delayTicks);
+    }
+
+    public void setStats(final LivingEntity dragonEntity) {
+        Main.getStatisticsManager().setStat("dragonDeathCount", Main.getStatisticsManager().getStatInt("dragonDeathCount") + 1);
+        if (dragonEntity.getKiller() == null) return;
+
+        // Update killer leaderboard
+        final String killerName = dragonEntity.getKiller().getName();
+        final String path = "dragonKillers." + killerName;
+        Main.getStatisticsManager().setStat(path, Main.getStatisticsManager().getStatInt(path) + 1);
+
+        // Set top dragon killer
+        MemorySection killersSection = null;
+
+        try {
+            killersSection = ((MemorySection) Main.getStatisticsManager().getStatObject("dragonKillers"));
+        } catch (ClassCastException e1) {
+            return;
+        }
+
+        String topKillerName = killerName;
+        int topKills = Main.getStatisticsManager().getStatInt("topDragonKillerKills");
+        for (Map.Entry<String, Object> playerAndKills : killersSection.getValues(false).entrySet()) {
+            int kills;
+            try {
+                kills = (int) playerAndKills.getValue();
+            } catch (ClassCastException e2) {
+                Util.logWarning("Could not get " + path);
+                continue;
+            }
+            if (kills >= topKills) {
+                topKills = kills;
+                topKillerName = playerAndKills.getKey();
+            }
+        }
+
+        Main.getStatisticsManager().setStat("topDragonKillerName", topKillerName);
+        Main.getStatisticsManager().setStat("topDragonKillerKills", topKills);
     }
 
     private void giveXP(LivingEntity dragonEntity, World theEnd) {
@@ -263,13 +303,17 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
     public boolean shouldRegisterListener() {
         return doGiveXP || doSpawnEgg || doDefeatAnnouncement || doCommands
             || (Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled()
-                && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0);
+                && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0)
+            || Main.getConfigManager().FEATURE_STATISTICS.isEnabled();
     }
 
     @Override
     public Map<String, Object> getStatisticsDefaults() {
         final Map<String, Object> defaults = new HashMap<String, Object>();
         defaults.put("dragonDeathCount", 0);
+        defaults.put("topDragonKillerName", "");
+        defaults.put("topDragonKillerKills", 0);
+        defaults.put("dragonKillers", null);
         return defaults;
     }
 }
