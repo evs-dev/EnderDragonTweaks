@@ -67,4 +67,8 @@ public class StatisticsManager {
         return statsConfig.isSet(statName);
     }
 
+    public void incrementStatInt(String statName, int by) {
+        setStat(statName, getStatInt(statName) + by);
+    }
+
 }

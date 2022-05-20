@@ -146,7 +146,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         // Update killer leaderboard
         final String killerName = dragonEntity.getKiller().getName();
         final String path = "dragonKillers." + killerName;
-        Main.getStatisticsManager().setStat(path, Main.getStatisticsManager().getStatInt(path) + 1);
+        Main.getStatisticsManager().incrementStatInt(path, 1);
 
         // Set top dragon killer
         MemorySection killersSection = null;
@@ -179,7 +179,8 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
     private void giveXP(LivingEntity dragonEntity, World theEnd) {
         // For every player in the End...
-        for (Player player : Util.getPlayersInEndCentreRadius(theEnd, playerRadius)) {
+        final List<Player> players = Util.getPlayersInEndCentreRadius(theEnd, playerRadius);
+        for (Player player : players) {
             // Give player XP
             switch (xpMode) {
                 default:
@@ -202,12 +203,16 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 theEnd.spawn(orbLocation, ExperienceOrb.class).setExperience(1);
             }
         }
+        Main.getStatisticsManager().incrementStatInt("totalXPGained", players.size() * xpPerPlayer);
     }
 
     private void spawnEgg(World theEnd) {
         // The game automatically spawns an Egg when the Dragon is first killed
         // This plugin shouldn't spawn another one
-        if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) return;
+        if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) {
+            Main.getStatisticsManager().incrementStatInt("eggsSpawned", 1);
+            return;
+        };
         if (RANDOM.nextDouble() > eggRespawnChance) return;
 
         Location eggLocation = findSpawnEggLocation(theEnd);
@@ -224,6 +229,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 eggLocation.getWorld().getName()
             )
         );
+        Main.getStatisticsManager().incrementStatInt("eggsSpawned", 1);
         if (eggRespawnAnnouncement != null && eggRespawnAnnouncement.length() > 0)  {
             Bukkit.broadcastMessage(
                 new ConfigStringParser()
@@ -314,6 +320,8 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         defaults.put("topDragonKillerName", "");
         defaults.put("topDragonKillerKills", 0);
         defaults.put("dragonKillers", null);
+        defaults.put("totalXPGained", 0);
+        defaults.put("eggsSpawned", 0);
         return defaults;
     }
 }
