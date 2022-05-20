@@ -8,6 +8,7 @@
 # - This is NOT a configuration file
 # - To reset any statistic, delete it and restart your server
 # - To reset all statistics, delete this file and restart your server
+# - The dragonKillers statistic (a leaderboard) will not appear until the Dragon is defeated
 # - All statistics can be used as placeholders in config.yml
 
 # Statistics file version - DO NOT CHANGE (is set by plugin)
