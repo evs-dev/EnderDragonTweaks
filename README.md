@@ -20,6 +20,8 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
     - Change the title, colour, and style of the Dragon's bossbar to your liking
 - Dragon respawn cooldown
     - Set a cooldown between the defeat of the Dragon and when it can next be respawned
+- Dragon statistics
+    - Various statistics about the Dragon (like its deaths and killers) are tracked and can be used in configured messages
 
 
 ### Config
@@ -32,13 +34,16 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
 # contributors: https://github.com/evs-dev/EnderDragonTweaks/graphs/contributors
 # CONFIGURATION FILE
 # ❗ IMPORTANT INFO: ❗
-# - Most strings support using the ampersand (&) symbol for colours and formats (https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes)
-# - Macros are placeholders you can include in strings that are replaced by the plugin
-# - Every string that has macros has a comment above explaining them
+# - All text supports using the ampersand (&) symbol for colours and formats
+#   (https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes)
+# - Placeholders can be included in strings and are replaced by the plugin
+# - Every string that has placeholders has a comment above explaining them
+# - You can use any statistic from statistics.yml as a placeholder, e.g. <stat-dragonDeathCount>
 # - Every string requires quotes ("example string") unless the default does not have them
 # - 20 ticks = 1 second
-# - This plugin uses bStats. To opt out of its anonymous stats collection, find the bStats folder in your plugins folder and set enabled to false in its config
-# - (https://bstats.org/plugin/bukkit/EnderDragonTweaks/12284)
+# - This plugin uses bStats. To opt out of its anonymous stats collection,
+#   find the bStats folder in your plugins folder and set enabled to false in its config
+#   (https://bstats.org/plugin/bukkit/EnderDragonTweaks/12284)
 
 # Config version - DO NOT CHANGE (is set by plugin)
 version: 0
@@ -93,7 +98,7 @@ egg-respawn:
   chance: 1.0
 
   # The message broadcasted when the Dragon egg respawns (leave blank to have no message)
-  # MACROS:
+  # PLACEHOLDERS:
   #   <position>: x, y, and z coordinates of the Egg (e.g. "x=0 y=68 z=0")
   # DEFAULT: ""
   announcement: ""
@@ -113,30 +118,31 @@ defeat-announcement:
   enabled: true
 
   # The message broadcasted when the Dragon is defeated
-  # MACROS:
+  # PLACEHOLDERS:
   #   <killer>: name of the player who killed the Dragon
   #   <participants>: list of players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
   # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r!"
   one-participant: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 
-  # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+  # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
   multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
 
 custom-commands:
-  enabled: true
+  enabled: false
 
   # The commands to be run by the server when the Dragon is defeated
   # Note that they will always send command feedback to the server console and all online ops
-  # MACROS:
+  # PLACEHOLDERS:
   #   <killer>: name of the player who killed the Dragon
   #   <killer-display-name>: display name of the player who killed the Dragon (may be the same as <killer>, or e.g. the nickname of the player)
   #   <participants-list>: list of players within max-player-distance-from-end-centre upon Dragon defeat (e.g. "p1, p2, & p3") (EXCEPT the killer)
   #   <each-participant>: the command will be run individually for players within max-player-distance-from-end-centre upon Dragon defeat (EXCEPT the killer)
-  # DEFAULT: []
+  # DEFAULT: [a list of commands]
   commands:
-    #- "give <killer> minecraft:diamond 4"
-    #- "give <each-participant> minecraft:iron_ingot 8"
-    #- "say Congratulations <killer-display-name> and <participants-list>!"
+    - "give <killer> minecraft:diamond 4"
+    - "give <each-participant> minecraft:iron_ingot 8"
+    - "say Congratulations <killer-display-name> and <participants-list>!"
+    - "say The killer <killer-display-name> has now killed the Dragon <stat-dragonKillers.<killer>> times!"
 
   # The text to replace <participants-list> with if there are no Dragon fight participants other than the killer
   # E.g. (using the 3rd example command) "Congratulations dragonkiller495 and no-one else!"
@@ -148,7 +154,7 @@ bossbar-customisation:
   enabled: false
 
   # List of possible names to be displayed above the bossbar (leave empty for "Ender Dragon")
-  # DEFAULT: []
+  # DEFAULT: [a list of names]
   names:
     #- "Bertha"
 
@@ -171,22 +177,25 @@ dragon-respawn-cooldown:
   cooldown: 6000
 
   # The message broadcasted when the Dragon respawn cooldown begins (if there is one)
-  # MACROS:
+  # PLACEHOLDERS:
   #   <time-remaining>: number of seconds before the cooldown ends
   # DEFAULT: "The <time-remaining>-second Dragon respawn cooldown has started!"
   enter-announcement: "The <time-remaining>-second Dragon respawn cooldown has started!"
 
   # The message broadcasted when the Dragon respawn cooldown ends
-  # MACROS:
+  # PLACEHOLDERS:
   #   <cooldown-length>: number of seconds the cooldown lasts; dragon-respawn-cooldown / 20
   # DEFAULT: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
   leave-announcement: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
 
   # The message sent to a player who tries to place an End Crystal to respawn the Dragon when the cooldown is active
-  # MACROS:
+  # PLACEHOLDERS:
   #   <time-remaining>: number of seconds before the cooldown ends
   # DEFAULT: "The Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
   warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+
+statistics:
+  enabled: true
 ```
 
 </details>

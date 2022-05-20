@@ -9,8 +9,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class Util {
 
     public static List<Player> getPlayersInEndCentreRadius(World theEnd, int radius) {
@@ -36,11 +34,8 @@ public class Util {
             multipleParticipants = numFightParticipants > 1 || !killerIsPlayer;
         }
 
-        final String message = ChatColor.translateAlternateColorCodes(
-            '&',
-            config.FEATURE_DEFEAT_ANNOUNCEMENT.getString(
-                multipleParticipants ? "multiple-participants" : "one-participant"
-            )
+        final String message = config.FEATURE_DEFEAT_ANNOUNCEMENT.getString(
+            multipleParticipants ? "multiple-participants" : "one-participant"
         );
 
         String helpingParticipants = "";
@@ -59,9 +54,10 @@ public class Util {
             }
         }
 
-        return message
-            .replace("<killer>", killerName)
-            .replace("<participants>", helpingParticipants);
+        return new ConfigStringParser()
+            .addPlaceholder("<killer>", killerName)
+            .addPlaceholder("<participants>", helpingParticipants)
+            .parse(message);
     }
 
     public static String formatParticipantsList(List<String> list) {

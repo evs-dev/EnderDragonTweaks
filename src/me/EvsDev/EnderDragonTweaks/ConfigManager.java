@@ -20,10 +20,11 @@ public class ConfigManager {
     public final ConfigSection FEATURE_CUSTOM_COMMANDS = new ConfigSection("custom-commands");
     public final ConfigSection FEATURE_BOSSBAR_CUSTOMISATION = new ConfigSection("bossbar-customisation");
     public final ConfigSection FEATURE_DRAGON_RESPAWN_COOLDOWN = new ConfigSection("dragon-respawn-cooldown");
+    public final ConfigSection FEATURE_STATISTICS = new ConfigSection("statistics");
 
     // Increment this when updating the default config in any way
     // NOTE: The value of the version key in the config should ALWAYS BE 0 to allow the below code to work
-    private static final int CONFIG_VERSION = 3;
+    private static final int CONFIG_VERSION = 4;
     private final FileConfiguration config;
 
     public ConfigManager(Plugin plugin) {
@@ -35,14 +36,18 @@ public class ConfigManager {
         plugin.saveDefaultConfig();
 
         final int loadedConfigVersion = this.config.getInt("version");
-        if (loadedConfigVersion != CONFIG_VERSION) {
+        checkConfigVersion(configFile, configFileExisted, loadedConfigVersion, CONFIG_VERSION, "config");
+    }
+
+    public static void checkConfigVersion(File configFile, boolean configFileExisted, int loadedConfigVersion, int targetConfigVersion, String noun) {
+        if (loadedConfigVersion != targetConfigVersion) {
             if (configFileExisted) {
                 // The loaded config is the wrong version (the version number is different to current or doesn't exist)
                 Util.logWarning(String.format(
                     "Your EnderDragonTweaks config is an old/unexpected version (config v%s)!"
                     + " Delete/rename it and restart the server to generate a new one (config v%s)."
                     + " (Not updating may result in default config values being used instead of your custom ones!)",
-                    loadedConfigVersion, CONFIG_VERSION)
+                    loadedConfigVersion, targetConfigVersion).replaceAll("config", noun)
                 );
             } else {
                 // A new config has just been generated, so the version needs to be set to current to
@@ -52,7 +57,7 @@ public class ConfigManager {
                 String content;
                 try {
                     content = new String(Files.readAllBytes(path), charset);
-                    content = content.replace("version: " + loadedConfigVersion, "version: " + CONFIG_VERSION);
+                    content = content.replace("version: " + loadedConfigVersion, "version: " + targetConfigVersion);
                     Files.write(path, content.getBytes(charset));
                 } catch (IOException e) {
                     // Something weird has happened

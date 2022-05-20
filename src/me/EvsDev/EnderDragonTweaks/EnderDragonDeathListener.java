@@ -1,6 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
@@ -20,8 +23,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
 
@@ -96,6 +97,9 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         if (doGiveXP)
             e.setDroppedExp(0);
 
+        if (Main.getConfigManager().FEATURE_STATISTICS.isEnabled())
+            setStats(dragonEntity);
+
         theEnd.spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, dragonEntity.getLocation(), 1200, 2, 1, 2, 1);
 
         EndCrystalPlacedListener.startCooldown();
@@ -135,9 +139,48 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
         }.runTaskLater(Main.getPlugin(Main.class), delayTicks);
     }
 
+    public void setStats(final LivingEntity dragonEntity) {
+        Main.getStatisticsManager().setStat("dragonDeathCount", Main.getStatisticsManager().getStatInt("dragonDeathCount") + 1);
+        if (dragonEntity.getKiller() == null) return;
+
+        // Update killer leaderboard
+        final String killerName = dragonEntity.getKiller().getName();
+        final String path = "dragonKillers." + killerName;
+        Main.getStatisticsManager().incrementStatInt(path, 1);
+
+        // Set top dragon killer
+        MemorySection killersSection = null;
+
+        try {
+            killersSection = ((MemorySection) Main.getStatisticsManager().getStatObject("dragonKillers"));
+        } catch (ClassCastException e1) {
+            return;
+        }
+
+        String topKillerName = killerName;
+        int topKills = Main.getStatisticsManager().getStatInt("topDragonKillerKills");
+        for (Map.Entry<String, Object> playerAndKills : killersSection.getValues(false).entrySet()) {
+            int kills;
+            try {
+                kills = (int) playerAndKills.getValue();
+            } catch (ClassCastException e2) {
+                Util.logWarning("Could not get " + path);
+                continue;
+            }
+            if (kills >= topKills) {
+                topKills = kills;
+                topKillerName = playerAndKills.getKey();
+            }
+        }
+
+        Main.getStatisticsManager().setStat("topDragonKillerName", topKillerName);
+        Main.getStatisticsManager().setStat("topDragonKillerKills", topKills);
+    }
+
     private void giveXP(LivingEntity dragonEntity, World theEnd) {
         // For every player in the End...
-        for (Player player : Util.getPlayersInEndCentreRadius(theEnd, playerRadius)) {
+        final List<Player> players = Util.getPlayersInEndCentreRadius(theEnd, playerRadius);
+        for (Player player : players) {
             // Give player XP
             switch (xpMode) {
                 default:
@@ -160,12 +203,16 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 theEnd.spawn(orbLocation, ExperienceOrb.class).setExperience(1);
             }
         }
+        Main.getStatisticsManager().incrementStatInt("totalXPGained", players.size() * xpPerPlayer);
     }
 
     private void spawnEgg(World theEnd) {
         // The game automatically spawns an Egg when the Dragon is first killed
         // This plugin shouldn't spawn another one
-        if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) return;
+        if (!theEnd.getEnderDragonBattle().hasBeenPreviouslyKilled()) {
+            Main.getStatisticsManager().incrementStatInt("eggsSpawned", 1);
+            return;
+        };
         if (RANDOM.nextDouble() > eggRespawnChance) return;
 
         Location eggLocation = findSpawnEggLocation(theEnd);
@@ -182,11 +229,12 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 eggLocation.getWorld().getName()
             )
         );
+        Main.getStatisticsManager().incrementStatInt("eggsSpawned", 1);
         if (eggRespawnAnnouncement != null && eggRespawnAnnouncement.length() > 0)  {
             Bukkit.broadcastMessage(
-                ChatColor.translateAlternateColorCodes(
-                    '&', eggRespawnAnnouncement.replace("<position>", Util.formatCoordinates(eggLocation))
-                )
+                new ConfigStringParser()
+                    .addPlaceholder("<position>", Util.formatCoordinates(eggLocation))
+                    .parse(eggRespawnAnnouncement)
             );
         }
     }
@@ -213,11 +261,13 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
         Util.logInfo("Executing " + commandsList.size() + " command(s)");
 
+        final ConfigStringParser cmdParser = new ConfigStringParser()
+            .addPlaceholder("<killer>", killerName)
+            .addPlaceholder("<killer-display-name>", killerDisplayName)
+            .addPlaceholder("<participants-list>", participantsString);
+
         for (String command : commandsList) {
-            final String cmd = command
-                .replace("<killer>", killerName)
-                .replace("<killer-display-name>", killerDisplayName)
-                .replace("<participants-list>", participantsString);
+            final String cmd = cmdParser.parse(command);
             if (cmd.contains("<each-participant>")) {
                 // Run the command for each participant individually
                 for (String participantName : participantNames) {
@@ -259,6 +309,19 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
     public boolean shouldRegisterListener() {
         return doGiveXP || doSpawnEgg || doDefeatAnnouncement || doCommands
             || (Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled()
-                && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0);
+                && Main.getConfigManager().FEATURE_DRAGON_RESPAWN_COOLDOWN.getInt("cooldown") > 0)
+            || Main.getConfigManager().FEATURE_STATISTICS.isEnabled();
+    }
+
+    @Override
+    public Map<String, Object> getStatisticsDefaults() {
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        defaults.put("dragonDeathCount", 0);
+        defaults.put("topDragonKillerName", "");
+        defaults.put("topDragonKillerKills", 0);
+        defaults.put("dragonKillers", null);
+        defaults.put("totalXPGained", 0);
+        defaults.put("eggsSpawned", 0);
+        return defaults;
     }
 }

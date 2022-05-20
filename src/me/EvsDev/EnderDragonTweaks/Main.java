@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,11 +14,16 @@ public class Main extends JavaPlugin {
 
     public static final String LOG_PREFIX = "[EnderDragonTweaks] ";
     private static ConfigManager configManager;
+    private static StatisticsManager statisticsManager;
 
     @Override
     public void onEnable() {
         configManager = new ConfigManager(this);
         if (!configManager.MAIN_SECTION.isEnabled()) return;
+
+        statisticsManager = new StatisticsManager();
+
+        //setupCommand("respawndragon", new RespawnDragonCommand(), null);
 
         final AbstractEnderDragonTweaksListener[] listeners = {
             new EnderDragonDeathListener(),
@@ -28,6 +36,12 @@ public class Main extends JavaPlugin {
             if (listeners[i].shouldRegisterListener()) {
                 pluginManager.registerEvents(listeners[i], this);
                 Util.logInfo("Enabling " + listeners[i].getClass().getSimpleName());
+
+                final Map<String, Object> statisticsDefaults = listeners[i].getStatisticsDefaults();
+                for (Map.Entry<String, Object> entry : statisticsDefaults.entrySet()) {
+                    if (statisticsManager.isSet(entry.getKey())) continue;
+                    statisticsManager.setStat(entry.getKey(), entry.getValue());
+                }
             }
         }
 
@@ -56,6 +70,18 @@ public class Main extends JavaPlugin {
             }));
         }
 
+        metrics.addCustomChart(new Metrics.SimplePie("custom_commands_enabled", () -> {
+            return configManager.FEATURE_CUSTOM_COMMANDS.isEnabled() ? "enabled" : "disabled";
+        }));
+
+        metrics.addCustomChart(new Metrics.SimplePie("dragon_respawn_cooldown_enabled", () -> {
+            return configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled() ? "enabled" : "disabled";
+        }));
+
+        metrics.addCustomChart(new Metrics.SimplePie("statistics_enabled", () -> {
+            return configManager.FEATURE_STATISTICS.isEnabled() ? "enabled" : "disabled";
+        }));
+
         final Map<String, ConfigSection> featuresToChart = new HashMap<String, ConfigSection>();
         featuresToChart.put("XP Drop", configManager.FEATURE_XP_DROP);
         featuresToChart.put("Decoration Orbs", configManager.FEATURE_DECORATION_ORBS);
@@ -64,6 +90,7 @@ public class Main extends JavaPlugin {
         featuresToChart.put("Custom Commands", configManager.FEATURE_CUSTOM_COMMANDS);
         featuresToChart.put("Bossbar Customisation", configManager.FEATURE_BOSSBAR_CUSTOMISATION);
         featuresToChart.put("Dragon Respawn Cooldown", configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN);
+        featuresToChart.put("Statistics", configManager.FEATURE_STATISTICS);
 
         metrics.addCustomChart(new Metrics.SimpleBarChart("features_popularity", new Callable<Map<String, Integer>>() {
             @Override
@@ -80,6 +107,17 @@ public class Main extends JavaPlugin {
 
     public static ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public static StatisticsManager getStatisticsManager() {
+        return statisticsManager;
+    }
+
+    @SuppressWarnings("unused")
+    private void setupCommand(String name, CommandExecutor executor, TabCompleter tabCompleter) {
+        final PluginCommand command = getCommand(name);
+        command.setExecutor(executor);
+        command.setTabCompleter(tabCompleter);
     }
 
 }

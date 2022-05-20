@@ -1,6 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.World.Environment;
@@ -44,7 +46,7 @@ public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksLis
         final BossBar bossbar = e.getEntity().getWorld().getEnderDragonBattle().getBossBar();
         if (bossbarNames.size() > 0) {
             final String name = bossbarNames.get(RANDOM.nextInt(bossbarNames.size()));
-            bossbar.setTitle(name);
+            bossbar.setTitle(new ConfigStringParser().parse(name));
             Util.logInfo("Set Dragon bossbar name to " + name);
         }
         if (bossbarColour.length() > 0) {
@@ -80,6 +82,12 @@ public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksLis
     @Override
     public boolean shouldRegisterListener() {
         return doBossbarCustomisation;
+    }
+
+    @Override
+    public Map<String, Object> getStatisticsDefaults() {
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        return defaults;
     }
 
 }

@@ -1,6 +1,8 @@
 package me.EvsDev.EnderDragonTweaks;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,8 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener {
 
@@ -55,10 +55,12 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
                 Util.logInfo("The Dragon respawn was cancelled because it's in cooldown. Time left: " + timeLeftInCooldown + " seconds");
                 if (cooldownWarningMessage != null && cooldownWarningMessage.length() > 0) {
                     e.getPlayer().sendMessage(
-                        ChatColor.translateAlternateColorCodes('&', cooldownWarningMessage)
-                            .replace("<time-remaining>", Long.toString(timeLeftInCooldown))
+                        new ConfigStringParser()
+                            .addPlaceholder("<time-remaining>", Long.toString(timeLeftInCooldown))
+                            .parse(cooldownWarningMessage)
                     );
                 }
+
             }
         }
     }
@@ -75,12 +77,19 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
                 @Override
                 public void run() {
                     isInCooldown = false;
-                    broadcastMessage(leaveCooldownMessage.replace("<cooldown-length>", Integer.toString(respawnCooldownSeconds)));
+                    broadcastMessage(new ConfigStringParser()
+                        .addPlaceholder("<cooldown-length>", Integer.toString(respawnCooldownSeconds))
+                        .parse(leaveCooldownMessage)
+                    );
+
                 }
             }.runTaskLater(Main.getPlugin(Main.class), respawnCooldownTicks);
             isInCooldown = true;
             cooldownStartEpochSeconds = Instant.now().getEpochSecond();
-            broadcastMessage(enterCooldownMessage.replace("<time-remaining>", Integer.toString(respawnCooldownSeconds)));
+            broadcastMessage(new ConfigStringParser()
+                .addPlaceholder("<time-remaining>", Integer.toString(respawnCooldownSeconds))
+                .parse(enterCooldownMessage)
+            );
         }
     }
 
@@ -89,9 +98,15 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
         return doRespawnCooldown && respawnCooldownTicks > 0;
     }
 
+    @Override
+    public Map<String, Object> getStatisticsDefaults() {
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        return defaults;
+    }
+
     private static void broadcastMessage(String rawMessage) {
         if (rawMessage != null && rawMessage.length() > 0)
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', rawMessage));
+            Bukkit.broadcastMessage(rawMessage);
     }
 
 }
