@@ -6,7 +6,8 @@
 # - Statistics are stored in this file
 # - Tampering with any part of this file may result in it breaking
 # - This is NOT a configuration file
-# - Options for statistics are in config.yml
+# - To reset any statistic, delete it and restart your server
+# - To reset all statistics, delete this file and restart your server
 # - All statistics can be used as placeholders in config.yml
 
 # Statistics file version - DO NOT CHANGE (is set by plugin)
