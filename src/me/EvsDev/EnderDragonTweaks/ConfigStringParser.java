@@ -33,7 +33,10 @@ public class ConfigStringParser {
             final String statPlaceholder = statPlaceholderMatcher.group(0);
             final String statPath = statPlaceholderMatcher.group(1);
             Object statValue = Main.getStatisticsManager().getStatObject(statPath);
-            if (statValue == null) statValue = "";
+            if (statValue == null) {
+                statValue = "";
+                Util.logWarning("Could not get " + statPath + " from " + statPlaceholder);
+            }
             string = string.replaceAll(statPlaceholder, statValue.toString());
         }
         return ChatColor.translateAlternateColorCodes('&', string);
