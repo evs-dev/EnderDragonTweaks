@@ -93,7 +93,7 @@ defeat-announcement:
   # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r!"
   one-participant: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 
-  # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+  # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
   multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
 
 custom-commands:
