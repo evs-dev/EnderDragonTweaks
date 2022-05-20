@@ -7,7 +7,7 @@
 #   (https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes)
 # - Placeholders can be included in strings and are replaced by the plugin
 # - Every string that has placeholders has a comment above explaining them
-# - You can use any statistic as a placeholder, e.g. <stat-dragonDeathCount>
+# - You can use any statistic from statistics.yml as a placeholder, e.g. <stat-dragonDeathCount>
 # - Every string requires quotes ("example string") unless the default does not have them
 # - 20 ticks = 1 second
 # - This plugin uses bStats. To opt out of its anonymous stats collection,
@@ -93,7 +93,7 @@ defeat-announcement:
   # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r!"
   one-participant: "&6<killer>&r just defeated the &5Ender Dragon&r!"
 
-  # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <players-in-end>!"
+  # DEFAULT: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
   multiple-participants: "&6<killer>&r just defeated the &5Ender Dragon&r with help from <participants>!"
 
 custom-commands:
