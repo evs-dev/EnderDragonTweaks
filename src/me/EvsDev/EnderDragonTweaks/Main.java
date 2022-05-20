@@ -70,11 +70,17 @@ public class Main extends JavaPlugin {
             }));
         }
 
-        if (configManager.FEATURE_STATISTICS.isEnabled()) {
-            metrics.addCustomChart(new Metrics.SimplePie("statistics_enabled", () -> {
-                return configManager.FEATURE_STATISTICS.isEnabled() ? "enabled" : "disabled";
-            }));
-        }
+        metrics.addCustomChart(new Metrics.SimplePie("custom_commands_enabled", () -> {
+            return configManager.FEATURE_CUSTOM_COMMANDS.isEnabled() ? "enabled" : "disabled";
+        }));
+
+        metrics.addCustomChart(new Metrics.SimplePie("dragon_respawn_cooldown_enabled", () -> {
+            return configManager.FEATURE_DRAGON_RESPAWN_COOLDOWN.isEnabled() ? "enabled" : "disabled";
+        }));
+
+        metrics.addCustomChart(new Metrics.SimplePie("statistics_enabled", () -> {
+            return configManager.FEATURE_STATISTICS.isEnabled() ? "enabled" : "disabled";
+        }));
 
         final Map<String, ConfigSection> featuresToChart = new HashMap<String, ConfigSection>();
         featuresToChart.put("XP Drop", configManager.FEATURE_XP_DROP);
