@@ -9,6 +9,7 @@ import org.bukkit.boss.DragonBattle.RespawnPhase;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class RespawnDragonCommand implements CommandExecutor {
@@ -41,13 +42,12 @@ public class RespawnDragonCommand implements CommandExecutor {
             sender.sendMessage("You cannot respawn the Dragon while it is already respawning." + dragonBattle.getRespawnPhase().toString());
             return true;
         }
-        sender.sendMessage("You cannot respawn the Dragon while it is already respawning." + dragonBattle.getRespawnPhase().toString());
 
         final Location endPortalLoc = dragonBattle.getEndPortalLocation();
-        endPortalLoc.clone().add(3, 2, 0).getBlock().setType(Material.END_CRYSTAL);
-        endPortalLoc.clone().add(-3, 2, 0).getBlock().setType(Material.END_CRYSTAL);
-        endPortalLoc.clone().add(0, 2, 3).getBlock().setType(Material.END_CRYSTAL);
-        endPortalLoc.clone().add(0, 2, -3).getBlock().setType(Material.END_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(2.5d, 1, 0), EntityType.ENDER_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(-2.5d, 1, 0), EntityType.ENDER_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(0, 1, 2.5d), EntityType.ENDER_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(0, 1, -2.5d), EntityType.ENDER_CRYSTAL);
 
         dragonBattle.initiateRespawn();
 
