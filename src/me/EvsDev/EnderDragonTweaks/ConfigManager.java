@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 public class ConfigManager {
 
     public final ConfigSection MAIN_SECTION = new ConfigSection(null);
+    public final ConfigSection FEATURE_DRAGON_ENHANCEMENTS = new ConfigSection("dragon-enhancements");
     public final ConfigSection FEATURE_XP_DROP = new ConfigSection("xp-drop");
     public final ConfigSection FEATURE_DECORATION_ORBS = new ConfigSection("decoration-orbs");
     public final ConfigSection FEATURE_EGG_RESPAWN = new ConfigSection("egg-respawn");
@@ -24,7 +25,7 @@ public class ConfigManager {
 
     // Increment this when updating the default config in any way
     // NOTE: The value of the version key in the config should ALWAYS BE 0 to allow the below code to work
-    private static final int CONFIG_VERSION = 4;
+    private static final int CONFIG_VERSION = 5;
     private final FileConfiguration config;
 
     public ConfigManager(Plugin plugin) {

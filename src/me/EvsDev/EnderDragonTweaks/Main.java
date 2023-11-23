@@ -29,6 +29,8 @@ public class Main extends JavaPlugin {
             new EnderDragonDeathListener(),
             new EndCrystalPlacedListener(),
             new EnderDragonChangePhaseListener(),
+            new DragonHealthModifier(),
+            new DragonDamageModifier(),
         };
 
         final PluginManager pluginManager = getServer().getPluginManager();

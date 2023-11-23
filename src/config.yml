@@ -33,6 +33,21 @@ max-player-distance-from-end-centre: 128
 # |        Features        |
 # |------------------------|
 
+dragon-enhancements:
+  enabled: false
+
+  # The amount of health points a newly-spawned Dragon has
+  # DEFAULT: 200
+  health: 200
+
+  # The multiplier for the damage the Dragon deals to players
+  # DEFAULT: 1.0
+  damage-multiplier: 1.0
+
+  # The multiplier for the damage the Dragon's breath deals to players
+  # DEFAULT: 1.0
+  breath-damage-multiplier: 1.0
+
 xp-drop:
   enabled: true
 
