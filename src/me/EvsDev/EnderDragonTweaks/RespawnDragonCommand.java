@@ -23,6 +23,24 @@ public class RespawnDragonCommand implements CommandExecutor {
         final Player player = (Player) sender;
         final World theEnd = player.getWorld();
 
+        if (args.length > 0) {
+            switch (args[0]) {
+                default:
+                case "overrideCooldown":
+                    if (EndCrystalPlacedListener.respawnIsInCooldown()) {
+                        EndCrystalPlacedListener.cancelCooldown();
+                        sender.sendMessage("The respawn cooldown was active so it was cancelled.");
+                    }
+                    break;
+                case "heedCooldown":
+                    if (EndCrystalPlacedListener.respawnIsInCooldown()) {
+                        sender.sendMessage("The respawn cooldown is active and you have chosen not to override it.");
+                        return true;
+                    }
+                    break;
+            }
+        }
+
         if (theEnd.getEnvironment() != Environment.THE_END) {
             // Not in the End
             sender.sendMessage("You cannot respawn the Dragon while not in the End.");

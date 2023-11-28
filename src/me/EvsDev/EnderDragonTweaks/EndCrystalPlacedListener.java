@@ -94,6 +94,16 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
         }
     }
 
+    public static void cancelCooldown() {
+        if (cooldownTask == null || cooldownTask.isCancelled()) return;
+        cooldownTask.cancel();
+        isInCooldown = false;
+    }
+
+    public static boolean respawnIsInCooldown() {
+        return isInCooldown;
+    }
+
     @Override
     public boolean shouldRegisterListener() {
         return doRespawnCooldown && respawnCooldownTicks > 0;
@@ -104,6 +114,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
         final Map<String, Object> defaults = new HashMap<String, Object>();
         return defaults;
     }
+
 
     private static void broadcastMessage(String rawMessage) {
         if (rawMessage != null && rawMessage.length() > 0)

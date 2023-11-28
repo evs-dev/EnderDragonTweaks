@@ -7,7 +7,7 @@ api-version: 1.16
 commands:
   respawndragon:
     description: "Respawns the Ender Dragon as if a player placed End Crystals on the End Portal"
-    usage: /<command>
+    usage: /<command> [overrideCooldown|heedCooldown]
 #permissions:
   #enderdragontweaks.respawndragon:
     #description: Allows usage of /respawndragon command

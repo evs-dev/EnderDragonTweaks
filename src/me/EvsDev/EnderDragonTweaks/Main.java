@@ -23,7 +23,7 @@ public class Main extends JavaPlugin {
 
         statisticsManager = new StatisticsManager();
 
-        setupCommand("respawndragon", new RespawnDragonCommand(), null);
+        setupCommand("respawndragon", new RespawnDragonCommand(), new RespawnDragonTabCompleter());
 
         final AbstractEnderDragonTweaksListener[] listeners = {
             new EnderDragonDeathListener(),
