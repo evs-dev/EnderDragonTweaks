@@ -51,18 +51,29 @@ dragon-enhancements:
 xp-drop:
   enabled: true
 
-  # The way xp-per-player should be interpreted.
+  # The amount of XP to give each Dragon fight participant upon Dragon death
+  # DEFAULT: 68
+  amount: 68
+
+  # The way the XP amount should be interpreted
   # levels: The value is given in levels (e.g. 68 will add 68 to the XP number displayed to the player)
   #         This is useful to add a consistent number of points
   # points: The value is given in points, which changes based on the player's current XP
   #         i.e. 12000 points will not always equal 68 levels
   # DEFAULT: levels
-  mode: levels
+  interpretation: levels
 
-  # The amount of XP to give each Dragon fight participant upon Dragon death
-  # This is interpreted differently depending on xp-mode
-  # DEFAULT: 68
-  xp-per-player: 68
+  # The way the XP amount should be distributed
+  # equal:        Each player gets the full amount
+  #               e.g. when amount is 68, 68 is given to each player in the End upon Dragon death
+  # split:        The value is divided by the number of Dragon fight participants, and each player gets the result
+  #               e.g. when amount is 68, 34 is given to each player if there are 2 players in the End upon Dragon death
+  # killer-bias:  The Dragon killer gets double the full amount, while the others just get the full amount
+  #               e.g. when amount is 68, 136 is given to the killer and 68 is given to every other player in the End upon Dragon death
+  # killer-only:  Only the Dragon killer gets XP
+  #               e.g. when amount is 68, 68 is given to the killer and no-one else gets XP
+  # DEFAULT: equal
+  distribution: equal
 
 decoration-orbs:
   enabled: true
