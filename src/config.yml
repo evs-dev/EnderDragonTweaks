@@ -173,21 +173,21 @@ dragon-respawn-cooldown:
 
   # The message broadcasted when the Dragon respawn cooldown begins (if there is one)
   # PLACEHOLDERS:
-  #   <time-remaining>: number of seconds before the cooldown ends
-  # DEFAULT: "The <time-remaining>-second Dragon respawn cooldown has started!"
-  enter-announcement: "The <time-remaining>-second Dragon respawn cooldown has started!"
+  #   <time-remaining>: amount of time left in the cooldown in hh:mm:ss format
+  # DEFAULT: "The Dragon respawn cooldown has started! <time-remaining> is left."
+  enter-announcement: "The Dragon respawn cooldown has started! <time-remaining> is left."
 
   # The message broadcasted when the Dragon respawn cooldown ends
   # PLACEHOLDERS:
-  #   <cooldown-length>: number of seconds the cooldown lasts; dragon-respawn-cooldown / 20
-  # DEFAULT: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
-  leave-announcement: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
+  #   <cooldown-length>: total length of the cooldown in hh:mm:ss format; dragon-respawn-cooldown / 20
+  # DEFAULT: "The <cooldown-length> Dragon respawn cooldown has ended!"
+  leave-announcement: "The <cooldown-length> Dragon respawn cooldown has ended!"
 
   # The message sent to a player who tries to place an End Crystal to respawn the Dragon when the cooldown is active
   # PLACEHOLDERS:
-  #   <time-remaining>: number of seconds before the cooldown ends
-  # DEFAULT: "The Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
-  warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+  #   <time-remaining>: amount of time left in the cooldown in hh:mm:ss format
+  # DEFAULT: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. &r<time-remaining> &cis left."
+  warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. &r<time-remaining> &cis left."
 
 statistics:
   enabled: true

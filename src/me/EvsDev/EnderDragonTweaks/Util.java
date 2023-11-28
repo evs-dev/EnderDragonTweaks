@@ -1,5 +1,6 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,6 +93,21 @@ public class Util {
 
     public static String formatCoordinates(Location location) {
         return String.format("x=%s y=%s z=%s", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    public static String formatSecondsToHHMMSS(long seconds) {
+        Duration duration = Duration.ofSeconds(seconds);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long remainingSeconds = duration.getSeconds() % 60;
+
+        if (hours <= 0 && minutes <= 0) {
+            return String.format("%02d seconds", remainingSeconds);
+        } else if (hours <= 0) {
+            return String.format("%02d:%02d", minutes, remainingSeconds);
+        } else {
+            return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
+        }
     }
 
     public static void logInfo(String message) {
