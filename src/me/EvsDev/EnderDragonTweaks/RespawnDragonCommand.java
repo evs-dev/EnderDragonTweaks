@@ -1,5 +1,6 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -9,19 +10,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 public class RespawnDragonCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            // Not a player - TODO make this be okay
+        final World theEnd = Bukkit.getServer().getWorlds().stream().filter(world -> world.getEnvironment() == Environment.THE_END).findFirst().orElse(null);
+        if (theEnd == null) {
+            sender.sendMessage("Could not find End world.");
             return true;
         }
-
-        final Player player = (Player) sender;
-        final World theEnd = player.getWorld();
 
         if (args.length > 0) {
             switch (args[0]) {
@@ -41,22 +39,14 @@ public class RespawnDragonCommand implements CommandExecutor {
             }
         }
 
-        if (theEnd.getEnvironment() != Environment.THE_END) {
-            // Not in the End
-            sender.sendMessage("You cannot respawn the Dragon while not in the End.");
-            return true;
-        }
-
         final DragonBattle dragonBattle = theEnd.getEnderDragonBattle();
         if (dragonBattle.getEnderDragon() != null) {
-            // Already a dragon
             sender.sendMessage("You cannot respawn the Dragon when there is already one.");
             return true;
         }
 
         if (dragonBattle.getRespawnPhase() != RespawnPhase.NONE) {
-            // Respawn already in progress
-            sender.sendMessage("You cannot respawn the Dragon while it is already respawning." + dragonBattle.getRespawnPhase().toString());
+            sender.sendMessage("You cannot respawn the Dragon while it is already respawning.");
             return true;
         }
 
@@ -68,7 +58,7 @@ public class RespawnDragonCommand implements CommandExecutor {
 
         dragonBattle.initiateRespawn();
 
-        sender.sendMessage("Beginning Ender Dragon respawn process");
+        sender.sendMessage("Dragon respawn initiated.");
         return true;
     }
 
