@@ -15,6 +15,11 @@ public class RespawnDragonCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("enderdragontweaks.respawndragon")) {
+            sender.sendMessage("You do not have permission to use this command.");
+            return true;
+        }
+
         final World theEnd = Bukkit.getServer().getWorlds().stream().filter(world -> world.getEnvironment() == Environment.THE_END).findFirst().orElse(null);
         if (theEnd == null) {
             sender.sendMessage("Could not find End world.");
