@@ -17,8 +17,8 @@ public class DragonDamageModifier extends AbstractEnderDragonTweaksListener {
     public DragonDamageModifier() {
         final ConfigManager configManager = Main.getConfigManager();
         if (!configManager.FEATURE_DRAGON_ENHANCEMENTS.isEnabled()) return;
-        hitMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getInt("damage-multiplier");
-        breathMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getInt("breath-damage-multiplier");
+        hitMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getInt("damage.hit-multiplier");
+        breathMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getInt("damage.breath-multiplier");
     }
 
     @EventHandler

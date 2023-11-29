@@ -36,17 +36,28 @@ max-player-distance-from-end-centre: 128
 dragon-enhancements:
   enabled: false
 
-  # The amount of health points a newly-spawned Dragon has
-  # DEFAULT: 200
-  health: 200
+  health:
+    # The amount of health points a newly-spawned Dragon has
+    # DEFAULT: 200
+    amount: 200
 
-  # The multiplier for the damage the Dragon deals to players
-  # DEFAULT: 1.0
-  damage-multiplier: 1.0
+    # The way the health amount should be determined
+    # fixed:       The health is always set to the amount specified (mode-value is ignored)
+    # random:      The health is randomly chosen between mode-value and the given amount
+    # progressive: The health amount increases by mode-value every time a new Dragon is spawned
+    #              Statistics must be enabled for progressive mode to work
+    # DEFAULT: fixed
+    mode: fixed
+    mode-value: 0
 
-  # The multiplier for the damage the Dragon's breath deals to players
-  # DEFAULT: 1.0
-  breath-damage-multiplier: 1.0
+  damage:
+    # The multiplier for the damage the Dragon's normal attacks deal to players
+    # DEFAULT: 1.0
+    hit-multiplier: 1.0
+
+    # The multiplier for the damage the Dragon's breath deals to players
+    # DEFAULT: 1.0
+    breath-multiplier: 1.0
 
 xp-drop:
   enabled: true
