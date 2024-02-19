@@ -86,6 +86,7 @@ public class Util {
 
     public static String getKillerName(Player killer, EntityDamageEvent damage, boolean displayName) {
         if (killer == null) {
+            if (damage == null) return "unknown damage source";
             return damage.getCause().toString().replace('_', ' ');
         }
         return displayName ? killer.getDisplayName() : killer.getName();
