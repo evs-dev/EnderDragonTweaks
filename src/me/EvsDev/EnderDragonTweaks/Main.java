@@ -52,7 +52,7 @@ public class Main extends JavaPlugin {
 
         if (configManager.FEATURE_XP_DROP.isEnabled()) {
             metrics.addCustomChart(new Metrics.SimplePie("xp_drop_mode", () -> {
-                return configManager.FEATURE_XP_DROP.getString("mode").toLowerCase();
+                return configManager.FEATURE_XP_DROP.getString("interpretation").toLowerCase();
             }));
         }
 
