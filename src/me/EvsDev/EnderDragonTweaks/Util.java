@@ -102,7 +102,7 @@ public class Util {
         long remainingSeconds = duration.getSeconds() % 60;
 
         if (hours <= 0 && minutes <= 0) {
-            return String.format("%02d seconds", remainingSeconds);
+            return String.format(remainingSeconds < 10 ? "%s seconds" : "%02d seconds", remainingSeconds);
         } else if (hours <= 0) {
             return String.format("%02d:%02d", minutes, remainingSeconds);
         } else {
