@@ -49,7 +49,7 @@ public class DragonHealthModifier extends AbstractEnderDragonTweaksListener {
                     healthToSet = random.nextInt(modeValue - health + 1) + health;
                 break;
             case "progressive":
-                healthToSet = health + (Main.getStatisticsManager().getStatInt("dragonDeathCount") + 1) * modeValue;
+                healthToSet = health + Main.getStatisticsManager().getStatInt("dragonDeathCount") * modeValue;
                 break;
         }
         final EnderDragon dragon = (EnderDragon) event.getEntity();
