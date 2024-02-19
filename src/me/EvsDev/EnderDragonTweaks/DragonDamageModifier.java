@@ -11,14 +11,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DragonDamageModifier extends AbstractEnderDragonTweaksListener {
 
-    public static int hitMultiplier = 1;
-    public static int breathMultiplier = 1;
+    public static double hitMultiplier = 1;
+    public static double breathMultiplier = 1;
 
     public DragonDamageModifier() {
         final ConfigManager configManager = Main.getConfigManager();
         if (!configManager.FEATURE_DRAGON_ENHANCEMENTS.isEnabled()) return;
-        hitMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getInt("damage.hit-multiplier");
-        breathMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getInt("damage.breath-multiplier");
+        hitMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getDouble("damage.hit-multiplier");
+        breathMultiplier = configManager.FEATURE_DRAGON_ENHANCEMENTS.getDouble("damage.breath-multiplier");
     }
 
     @EventHandler
