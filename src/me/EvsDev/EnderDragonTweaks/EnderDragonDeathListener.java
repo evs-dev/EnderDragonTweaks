@@ -183,6 +183,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
     private void giveXP(LivingEntity dragonEntity, World theEnd) {
         // For every player in the End...
         final List<Player> players = Util.getPlayersInEndCentreRadius(theEnd, playerRadius);
+        int totalGained = 0;
         for (Player player : players) {
             int xpToGive = 0;
             switch (xpDistribution) {
@@ -201,6 +202,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                     else continue;
                     break;
             }
+            totalGained += xpToGive;
 
             // Give player XP
             switch (xpInterpretation) {
@@ -224,7 +226,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 theEnd.spawn(orbLocation, ExperienceOrb.class).setExperience(1);
             }
         }
-        Main.getStatisticsManager().incrementStatInt("totalXPGained", players.size() * xpAmount);
+        Main.getStatisticsManager().incrementStatInt("totalXPGained", totalGained);
     }
 
     private void spawnEgg(World theEnd) {
