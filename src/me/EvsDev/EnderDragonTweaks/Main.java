@@ -47,6 +47,11 @@ public class Main extends JavaPlugin {
             }
         }
 
+        // Update checker
+        if (configManager.MAIN_SECTION.getBoolean("check-for-updates")) {
+            new UpdateChecker(82877);
+        }
+
         // bStats metrics
         final Metrics metrics = new Metrics(this, 12284);
 
