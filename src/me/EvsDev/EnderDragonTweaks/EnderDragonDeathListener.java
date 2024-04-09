@@ -269,9 +269,12 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
             playerRadius
         ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
 
-        Bukkit.broadcastMessage(
-            Util.formatDefeatAnnouncementMessage(killerName, killer != null, fightParticipantNames, Main.getConfigManager())
-        );
+        final String message = Util.formatDefeatAnnouncementMessage(killerName, killer != null, fightParticipantNames, Main.getConfigManager());
+        if (message == null) {
+            Util.logWarning("Defeat announcement message could not be formatted correctly");
+            return;
+        }
+        Bukkit.broadcastMessage(message);
     }
 
     private void runCommands(String killerName, String killerDisplayName, List<String> participantNames, List<String> participantDisplayNames) {
