@@ -24,7 +24,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
+public class DragonDeathListener extends AbstractEnderDragonTweaksListener {
 
     private static int delayTicks;
     private static int playerRadius;
@@ -50,7 +50,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
     private final Random RANDOM = new Random();
 
-    public EnderDragonDeathListener() {
+    public DragonDeathListener() {
         final ConfigManager configManager = Main.getConfigManager();
         delayTicks = configManager.MAIN_SECTION.getInt("delay");
         playerRadius = configManager.MAIN_SECTION.getInt("max-player-distance-from-end-centre");

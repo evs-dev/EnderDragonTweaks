@@ -26,9 +26,9 @@ public class Main extends JavaPlugin {
         setupCommand("respawndragon", new RespawnDragonCommand(), new RespawnDragonTabCompleter());
 
         final AbstractEnderDragonTweaksListener[] listeners = {
-            new EnderDragonDeathListener(),
+            new DragonDeathListener(),
             new EndCrystalPlacedListener(),
-            new EnderDragonChangePhaseListener(),
+            new DragonChangePhaseListener(),
             new DragonHealthModifier(),
             new DragonDamageModifier(),
         };
