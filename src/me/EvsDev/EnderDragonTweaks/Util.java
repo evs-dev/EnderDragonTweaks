@@ -14,6 +14,7 @@ public class Util {
 
     public static List<Player> getPlayersInEndCentreRadius(World theEnd, int radius) {
         final Location endCentre = new Location(theEnd, 0, 65, 0);
+        radius = Math.min(radius, 46000); // Cap radius so the square won't go beyond Integer.MAX_VALUE
         final int radiusSqrd = radius * radius;
         return theEnd.getPlayers().stream()
             .filter(p -> p.getLocation().distanceSquared(endCentre) <= radiusSqrd)
