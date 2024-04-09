@@ -55,7 +55,7 @@ public class DragonHealthModifier extends AbstractEnderDragonTweaksListener {
         final EnderDragon dragon = (EnderDragon) event.getEntity();
         dragon.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(healthToSet);
         dragon.setHealth(healthToSet);
-        Util.logInfo("Set dragon health to " + healthToSet);
+        Util.logInfo("Set Dragon health to " + healthToSet);
     }
 
     @Override
