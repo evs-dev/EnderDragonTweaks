@@ -46,7 +46,7 @@ public class ConfigManager {
                 // The loaded config is the wrong version (the version number is different to current or doesn't exist)
                 Util.logWarning(String.format(
                     "Your EnderDragonTweaks config is an old/unexpected version (config v%s)!"
-                    + " Delete/rename it and restart the server to generate a new one (config v%s)."
+                    + " Make a backup of it and use https://evs-dev.github.io/edt-config-updater to update it to config v%s."
                     + " (Not updating may result in default config values being used instead of your custom ones!)",
                     loadedConfigVersion, targetConfigVersion).replaceAll("config", noun)
                 );
