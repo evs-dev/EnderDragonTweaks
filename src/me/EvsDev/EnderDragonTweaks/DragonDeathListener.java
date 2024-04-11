@@ -192,15 +192,17 @@ public class DragonDeathListener extends AbstractEnderDragonTweaksListener {
                     xpToGive = xpAmount;
                     break;
                 case "split":
-                    xpAmount = (int) Math.floor(xpAmount / players.size());
+                    xpToGive = (int) Math.floor(xpAmount / players.size());
                     break;
                 case "killer-bias":
                     xpToGive = player == dragonEntity.getKiller() ? xpAmount * 2 : xpAmount;
                     break;
                 case "killer-only":
-                    if (player == dragonEntity.getKiller()) xpToGive = xpAmount;
+                    if (player == dragonEntity.getKiller()) {
+                        xpToGive = xpAmount;
+                        break;
+                    }
                     else continue;
-                    break;
             }
             totalGained += xpToGive;
 
