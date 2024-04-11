@@ -49,7 +49,7 @@ public class Main extends JavaPlugin {
 
         // Update checker
         if (configManager.MAIN_SECTION.getBoolean("check-for-updates")) {
-            new UpdateChecker(82877);
+            UpdateChecker.check(82877);
         }
 
         // bStats metrics
