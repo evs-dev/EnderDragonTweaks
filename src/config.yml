@@ -4,7 +4,7 @@
 # CONFIGURATION FILE
 # ❗ IMPORTANT INFO: ❗
 # - All text supports using the ampersand (&) symbol for colours and formats
-#   (https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes)
+#   (https://minecraft.wiki/w/Formatting_codes#Color_codes)
 # - Placeholders can be included in strings and are replaced by the plugin
 # - Every string that has placeholders has a comment above explaining them
 # - You can use any statistic from statistics.yml as a placeholder, e.g. <stat-dragonDeathCount>
