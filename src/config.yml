@@ -10,6 +10,7 @@
 # - You can use any statistic from statistics.yml as a placeholder, e.g. <stat-dragonDeathCount>
 # - Every string requires quotes ("example string") unless the default does not have them
 # - 20 ticks = 1 second
+# - If you need to update your config, use https://evs-dev.github.io/edt-config-updater
 # - This plugin uses bStats. To opt out of its anonymous stats collection,
 #   find the bStats folder in your plugins folder and set enabled to false in its config
 #   (https://bstats.org/plugin/bukkit/EnderDragonTweaks/12284)
