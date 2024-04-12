@@ -6,8 +6,10 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
 
 ### Features
 
+- Change Dragon health and damage to players
+    - Enhance the Dragon by customising its health and the damage it outputs, providing a greater (or lesser) challenge for players
 - Shared XP drop
-    - The same number of experience points is given to every player in the End when the Dragon is defeated
+    - Share experience levels/points equally between players or reward only the Dragon killer when the Dragon is defeated
 - Decorative XP orbs
     - XP orbs with no value are spawned above every player in the End to add excitement to the defeat
 - Respawn Dragon Egg
@@ -22,6 +24,10 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
     - Set a cooldown between the defeat of the Dragon and when it can next be respawned
 - Dragon statistics
     - Various statistics about the Dragon (like its deaths and killers) are tracked and can be used in configured messages
+- Respawn Dragon command
+    - Respawn the Dragon manually using the command `/respawndragon` (permission: `enderdragontweaks.respawndragon`)
+    - Heed the respawn cooldown (i.e. don't respawn if the cooldown is active) using `/respawndragon heedCooldown`
+    - Override the cooldown (i.e. respawn even if the cooldown is active) using `/respawndragon overrideCooldown`
 
 
 ### Config
@@ -35,12 +41,13 @@ EnderDragonTweaks improves the defeating of the Ender Dragon, especially in mult
 # CONFIGURATION FILE
 # ❗ IMPORTANT INFO: ❗
 # - All text supports using the ampersand (&) symbol for colours and formats
-#   (https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes)
+#   (https://minecraft.wiki/w/Formatting_codes#Color_codes)
 # - Placeholders can be included in strings and are replaced by the plugin
 # - Every string that has placeholders has a comment above explaining them
 # - You can use any statistic from statistics.yml as a placeholder, e.g. <stat-dragonDeathCount>
 # - Every string requires quotes ("example string") unless the default does not have them
 # - 20 ticks = 1 second
+# - If you need to update your config, use https://evs-dev.github.io/edt-config-updater
 # - This plugin uses bStats. To opt out of its anonymous stats collection,
 #   find the bStats folder in your plugins folder and set enabled to false in its config
 #   (https://bstats.org/plugin/bukkit/EnderDragonTweaks/12284)
@@ -51,6 +58,10 @@ version: 0
 # Is the plugin enabled?
 # DEFAULT: true
 enabled: true
+
+# Should the plugin check for updates and report to the console?
+# DEFAULT: true
+check-for-updates: true
 
 # The delay in ticks between the death of the Dragon and when this plugin triggers
 # DEFAULT: 80
@@ -64,21 +75,58 @@ max-player-distance-from-end-centre: 128
 # |        Features        |
 # |------------------------|
 
+dragon-enhancements:
+  enabled: false
+
+  health:
+    # The amount of health points a newly-spawned Dragon has
+    # DEFAULT: 200
+    amount: 200
+
+    # The way the health amount should be determined
+    # fixed:       The health is always set to the amount specified (mode-value is ignored)
+    # random:      The health is randomly chosen between mode-value and the given amount
+    # progressive: The health amount increases by mode-value every time a new Dragon is spawned
+    #              Statistics must be enabled for progressive mode to work
+    # DEFAULT: fixed
+    mode: fixed
+    mode-value: 0
+
+  damage:
+    # The multiplier for the damage the Dragon's normal attacks deal to players
+    # DEFAULT: 1.0
+    hit-multiplier: 1.0
+
+    # The multiplier for the damage the Dragon's breath deals to players
+    # DEFAULT: 1.0
+    breath-multiplier: 1.0
+
 xp-drop:
   enabled: true
 
-  # The way xp-per-player should be interpreted.
+  # The amount of XP to give each Dragon fight participant upon Dragon death
+  # DEFAULT: 68
+  amount: 68
+
+  # The way the XP amount should be interpreted
   # levels: The value is given in levels (e.g. 68 will add 68 to the XP number displayed to the player)
   #         This is useful to add a consistent number of points
   # points: The value is given in points, which changes based on the player's current XP
   #         i.e. 12000 points will not always equal 68 levels
   # DEFAULT: levels
-  mode: levels
+  interpretation: levels
 
-  # The amount of XP to give each Dragon fight participant upon Dragon death
-  # This is interpreted differently depending on xp-mode
-  # DEFAULT: 68
-  xp-per-player: 68
+  # The way the XP amount should be distributed
+  # equal:        Each player gets the full amount
+  #               e.g. when amount is 68, 68 is given to each player in the End upon Dragon death
+  # split:        The value is divided by the number of Dragon fight participants, and each player gets the result
+  #               e.g. when amount is 68, 34 is given to each player if there are 2 players in the End upon Dragon death
+  # killer-bias:  The Dragon killer gets double the full amount, while the others just get the full amount
+  #               e.g. when amount is 68, 136 is given to the killer and 68 is given to every other player in the End upon Dragon death
+  # killer-only:  Only the Dragon killer gets XP
+  #               e.g. when amount is 68, 68 is given to the killer and no-one else gets XP
+  # DEFAULT: equal
+  distribution: equal
 
 decoration-orbs:
   enabled: true
@@ -178,21 +226,21 @@ dragon-respawn-cooldown:
 
   # The message broadcasted when the Dragon respawn cooldown begins (if there is one)
   # PLACEHOLDERS:
-  #   <time-remaining>: number of seconds before the cooldown ends
-  # DEFAULT: "The <time-remaining>-second Dragon respawn cooldown has started!"
-  enter-announcement: "The <time-remaining>-second Dragon respawn cooldown has started!"
+  #   <time-remaining>: amount of time left in the cooldown in hh:mm:ss format
+  # DEFAULT: "The Dragon respawn cooldown has started! <time-remaining> is left."
+  enter-announcement: "The Dragon respawn cooldown has started! <time-remaining> is left."
 
   # The message broadcasted when the Dragon respawn cooldown ends
   # PLACEHOLDERS:
-  #   <cooldown-length>: number of seconds the cooldown lasts; dragon-respawn-cooldown / 20
-  # DEFAULT: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
-  leave-announcement: "The <cooldown-length>-second Dragon respawn cooldown has ended!"
+  #   <cooldown-length>: total length of the cooldown in hh:mm:ss format; dragon-respawn-cooldown / 20
+  # DEFAULT: "The <cooldown-length> Dragon respawn cooldown has ended!"
+  leave-announcement: "The <cooldown-length> Dragon respawn cooldown has ended!"
 
   # The message sent to a player who tries to place an End Crystal to respawn the Dragon when the cooldown is active
   # PLACEHOLDERS:
-  #   <time-remaining>: number of seconds before the cooldown ends
-  # DEFAULT: "The Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
-  warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. Cooldown time left: &r<time-remaining> seconds"
+  #   <time-remaining>: amount of time left in the cooldown in hh:mm:ss format
+  # DEFAULT: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. &r<time-remaining> &cis left."
+  warning: "&cThe Ender Dragon cannot be respawned at the moment because it's in cooldown. &r<time-remaining> &cis left."
 
 statistics:
   enabled: true
@@ -204,5 +252,5 @@ statistics:
 
 1. Download the latest EnderDragonTweaks-x.x.x.jar
 2. Place in into your server plugins folder
-   - If updating EnderDragonTweaks, you might need to rename or delete your current config to generate a new and updated version. You will have to copy your configured values over
+   - If updating EnderDragonTweaks, you probably need to update your config.yml using https://evs-dev.github.io/edt-config-updater
 3. (Re)start your server!
