@@ -1,7 +1,7 @@
 package me.EvsDev.EnderDragonTweaks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.boss.DragonBattle;
@@ -9,49 +9,61 @@ import org.bukkit.boss.DragonBattle.RespawnPhase;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
 
 public class RespawnDragonCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            // Not a player - TODO make this be okay
+        if (!sender.hasPermission("enderdragontweaks.respawndragon")) {
+            sender.sendMessage("You do not have permission to use this command.");
             return true;
         }
 
-        final Player player = (Player) sender;
-        final World theEnd = player.getWorld();
-
-        if (theEnd.getEnvironment() != Environment.THE_END) {
-            // Not in the End
-            sender.sendMessage("You cannot respawn the Dragon while not in the End.");
+        final World theEnd = Bukkit.getServer().getWorlds().stream().filter(world -> world.getEnvironment() == Environment.THE_END).findFirst().orElse(null);
+        if (theEnd == null) {
+            sender.sendMessage("Could not find End world.");
             return true;
+        }
+
+        if (args.length > 0) {
+            switch (args[0]) {
+                default:
+                case "overrideCooldown":
+                    if (EndCrystalPlacedListener.respawnIsInCooldown()) {
+                        EndCrystalPlacedListener.cancelCooldown();
+                        sender.sendMessage("The respawn cooldown was active so it was cancelled.");
+                    }
+                    break;
+                case "heedCooldown":
+                    if (EndCrystalPlacedListener.respawnIsInCooldown()) {
+                        sender.sendMessage("The respawn cooldown is active and you have chosen not to override it.");
+                        return true;
+                    }
+                    break;
+            }
         }
 
         final DragonBattle dragonBattle = theEnd.getEnderDragonBattle();
         if (dragonBattle.getEnderDragon() != null) {
-            // Already a dragon
             sender.sendMessage("You cannot respawn the Dragon when there is already one.");
             return true;
         }
 
         if (dragonBattle.getRespawnPhase() != RespawnPhase.NONE) {
-            // Respawn already in progress
-            sender.sendMessage("You cannot respawn the Dragon while it is already respawning." + dragonBattle.getRespawnPhase().toString());
+            sender.sendMessage("You cannot respawn the Dragon while it is already respawning.");
             return true;
         }
-        sender.sendMessage("You cannot respawn the Dragon while it is already respawning." + dragonBattle.getRespawnPhase().toString());
 
         final Location endPortalLoc = dragonBattle.getEndPortalLocation();
-        endPortalLoc.clone().add(3, 2, 0).getBlock().setType(Material.END_CRYSTAL);
-        endPortalLoc.clone().add(-3, 2, 0).getBlock().setType(Material.END_CRYSTAL);
-        endPortalLoc.clone().add(0, 2, 3).getBlock().setType(Material.END_CRYSTAL);
-        endPortalLoc.clone().add(0, 2, -3).getBlock().setType(Material.END_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(2.5d, 1, 0), EntityType.ENDER_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(-2.5d, 1, 0), EntityType.ENDER_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(0, 1, 2.5d), EntityType.ENDER_CRYSTAL);
+        theEnd.spawnEntity(endPortalLoc.clone().add(0, 1, -2.5d), EntityType.ENDER_CRYSTAL);
 
         dragonBattle.initiateRespawn();
 
-        sender.sendMessage("Beginning Ender Dragon respawn process");
+        sender.sendMessage("Dragon respawn initiated.");
         return true;
     }
 

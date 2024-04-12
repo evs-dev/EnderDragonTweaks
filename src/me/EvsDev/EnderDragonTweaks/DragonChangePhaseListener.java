@@ -14,7 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EnderDragonChangePhaseEvent;
 
-public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksListener {
+public class DragonChangePhaseListener extends AbstractEnderDragonTweaksListener {
 
     private static boolean doBossbarCustomisation;
     private static List<String> bossbarNames;
@@ -24,7 +24,7 @@ public class EnderDragonChangePhaseListener extends AbstractEnderDragonTweaksLis
     private Entity currentDragonEntity;
     private final Random RANDOM = new Random();
 
-    public EnderDragonChangePhaseListener() {
+    public DragonChangePhaseListener() {
         final ConfigManager configManager = Main.getConfigManager();
         doBossbarCustomisation = configManager.FEATURE_BOSSBAR_CUSTOMISATION.isEnabled();
         if (doBossbarCustomisation) {

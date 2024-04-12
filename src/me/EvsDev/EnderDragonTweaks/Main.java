@@ -23,12 +23,14 @@ public class Main extends JavaPlugin {
 
         statisticsManager = new StatisticsManager();
 
-        //setupCommand("respawndragon", new RespawnDragonCommand(), null);
+        setupCommand("respawndragon", new RespawnDragonCommand(), new RespawnDragonTabCompleter());
 
         final AbstractEnderDragonTweaksListener[] listeners = {
-            new EnderDragonDeathListener(),
+            new DragonDeathListener(),
             new EndCrystalPlacedListener(),
-            new EnderDragonChangePhaseListener(),
+            new DragonChangePhaseListener(),
+            new DragonHealthModifier(),
+            new DragonDamageModifier(),
         };
 
         final PluginManager pluginManager = getServer().getPluginManager();
@@ -45,12 +47,17 @@ public class Main extends JavaPlugin {
             }
         }
 
+        // Update checker
+        if (configManager.MAIN_SECTION.getBoolean("check-for-updates")) {
+            UpdateChecker.check(82877);
+        }
+
         // bStats metrics
         final Metrics metrics = new Metrics(this, 12284);
 
         if (configManager.FEATURE_XP_DROP.isEnabled()) {
             metrics.addCustomChart(new Metrics.SimplePie("xp_drop_mode", () -> {
-                return configManager.FEATURE_XP_DROP.getString("mode").toLowerCase();
+                return configManager.FEATURE_XP_DROP.getString("interpretation").toLowerCase();
             }));
         }
 

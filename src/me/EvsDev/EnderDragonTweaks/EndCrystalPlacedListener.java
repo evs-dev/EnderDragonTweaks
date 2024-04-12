@@ -38,6 +38,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
         }
     }
 
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onEndCrystalPlaced(PlayerInteractEvent e) {
         // Check whether the player placed an End Crystal on the End Portal Bedrock (as if going to respawn the Dragon),
@@ -52,11 +53,11 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
                 e.setCancelled(true);
                 final long secondsSinceStartedCooldown = Instant.now().getEpochSecond() - cooldownStartEpochSeconds;
                 final long timeLeftInCooldown = respawnCooldownSeconds - secondsSinceStartedCooldown;
-                Util.logInfo("The Dragon respawn was cancelled because it's in cooldown. Time left: " + timeLeftInCooldown + " seconds");
+                Util.logInfo("The Dragon respawn was cancelled because it's in cooldown. Time left: " + Util.formatSecondsToHHMMSS(timeLeftInCooldown));
                 if (cooldownWarningMessage != null && cooldownWarningMessage.length() > 0) {
                     e.getPlayer().sendMessage(
                         new ConfigStringParser()
-                            .addPlaceholder("<time-remaining>", Long.toString(timeLeftInCooldown))
+                            .addPlaceholder("<time-remaining>", Util.formatSecondsToHHMMSS(timeLeftInCooldown))
                             .parse(cooldownWarningMessage)
                     );
                 }
@@ -78,7 +79,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
                 public void run() {
                     isInCooldown = false;
                     broadcastMessage(new ConfigStringParser()
-                        .addPlaceholder("<cooldown-length>", Integer.toString(respawnCooldownSeconds))
+                        .addPlaceholder("<cooldown-length>", Util.formatSecondsToHHMMSS(respawnCooldownSeconds))
                         .parse(leaveCooldownMessage)
                     );
 
@@ -87,10 +88,20 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
             isInCooldown = true;
             cooldownStartEpochSeconds = Instant.now().getEpochSecond();
             broadcastMessage(new ConfigStringParser()
-                .addPlaceholder("<time-remaining>", Integer.toString(respawnCooldownSeconds))
+                .addPlaceholder("<time-remaining>", Util.formatSecondsToHHMMSS(respawnCooldownSeconds))
                 .parse(enterCooldownMessage)
             );
         }
+    }
+
+    public static void cancelCooldown() {
+        if (cooldownTask == null || cooldownTask.isCancelled()) return;
+        cooldownTask.cancel();
+        isInCooldown = false;
+    }
+
+    public static boolean respawnIsInCooldown() {
+        return isInCooldown;
     }
 
     @Override
@@ -103,6 +114,7 @@ public class EndCrystalPlacedListener extends AbstractEnderDragonTweaksListener 
         final Map<String, Object> defaults = new HashMap<String, Object>();
         return defaults;
     }
+
 
     private static void broadcastMessage(String rawMessage) {
         if (rawMessage != null && rawMessage.length() > 0)

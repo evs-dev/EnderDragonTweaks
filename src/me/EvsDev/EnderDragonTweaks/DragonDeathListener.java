@@ -24,14 +24,15 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener {
+public class DragonDeathListener extends AbstractEnderDragonTweaksListener {
 
     private static int delayTicks;
     private static int playerRadius;
 
     private static boolean doGiveXP;
-    private static String xpMode;
-    private static int xpPerPlayer;
+    private static String xpInterpretation;
+    private static int xpAmount;
+    private static String xpDistribution;
 
     private static boolean doDecorationOrbs;
     private static int orbCount;
@@ -49,15 +50,17 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
 
     private final Random RANDOM = new Random();
 
-    public EnderDragonDeathListener() {
+    public DragonDeathListener() {
         final ConfigManager configManager = Main.getConfigManager();
         delayTicks = configManager.MAIN_SECTION.getInt("delay");
         playerRadius = configManager.MAIN_SECTION.getInt("max-player-distance-from-end-centre");
 
         doGiveXP = configManager.FEATURE_XP_DROP.isEnabled();
         if (doGiveXP) {
-            xpMode = configManager.FEATURE_XP_DROP.getString("mode").toLowerCase();
-            xpPerPlayer = configManager.FEATURE_XP_DROP.getInt("xp-per-player");
+            xpInterpretation = configManager.FEATURE_XP_DROP.getString("interpretation").toLowerCase();
+            xpAmount = configManager.FEATURE_XP_DROP.getInt("amount");
+            if (xpAmount < 0) xpAmount = 0;
+            xpDistribution = configManager.FEATURE_XP_DROP.getString("distribution").toLowerCase();
         }
 
         doDecorationOrbs = configManager.FEATURE_DECORATION_ORBS.isEnabled();
@@ -180,15 +183,37 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
     private void giveXP(LivingEntity dragonEntity, World theEnd) {
         // For every player in the End...
         final List<Player> players = Util.getPlayersInEndCentreRadius(theEnd, playerRadius);
+        int totalGained = 0;
         for (Player player : players) {
+            int xpToGive = 0;
+            switch (xpDistribution) {
+                default:
+                case "equal":
+                    xpToGive = xpAmount;
+                    break;
+                case "split":
+                    xpToGive = (int) Math.floor(xpAmount / players.size());
+                    break;
+                case "killer-bias":
+                    xpToGive = player == dragonEntity.getKiller() ? xpAmount * 2 : xpAmount;
+                    break;
+                case "killer-only":
+                    if (player == dragonEntity.getKiller()) {
+                        xpToGive = xpAmount;
+                        break;
+                    }
+                    else continue;
+            }
+            totalGained += xpToGive;
+
             // Give player XP
-            switch (xpMode) {
+            switch (xpInterpretation) {
                 default:
                 case "levels":
-                    player.giveExpLevels(xpPerPlayer);
+                    player.giveExpLevels(xpToGive);
                     break;
                 case "points":
-                    player.giveExp(xpPerPlayer);
+                    player.giveExp(xpToGive);
                     break;
             }
 
@@ -203,7 +228,7 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
                 theEnd.spawn(orbLocation, ExperienceOrb.class).setExperience(1);
             }
         }
-        Main.getStatisticsManager().incrementStatInt("totalXPGained", players.size() * xpPerPlayer);
+        Main.getStatisticsManager().incrementStatInt("totalXPGained", totalGained);
     }
 
     private void spawnEgg(World theEnd) {
@@ -246,9 +271,12 @@ public class EnderDragonDeathListener extends AbstractEnderDragonTweaksListener 
             playerRadius
         ).stream().map(p -> p.getDisplayName()).collect(Collectors.toList());
 
-        Bukkit.broadcastMessage(
-            Util.formatDefeatAnnouncementMessage(killerName, killer != null, fightParticipantNames, Main.getConfigManager())
-        );
+        final String message = Util.formatDefeatAnnouncementMessage(killerName, killer != null, fightParticipantNames, Main.getConfigManager());
+        if (message == null) {
+            Util.logWarning("Defeat announcement message could not be formatted correctly");
+            return;
+        }
+        Bukkit.broadcastMessage(message);
     }
 
     private void runCommands(String killerName, String killerDisplayName, List<String> participantNames, List<String> participantDisplayNames) {
