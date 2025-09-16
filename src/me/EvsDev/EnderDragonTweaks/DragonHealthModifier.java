@@ -15,6 +15,7 @@ public class DragonHealthModifier extends AbstractEnderDragonTweaksListener {
     public static String mode = "fixed";
     public static int modeValue = 0;
     public static Random random = new Random();
+    private static final int MAX_DRAGON_HEALTH = 1024; // Max health in Minecraft
 
     public DragonHealthModifier() {
         final ConfigManager configManager = Main.getConfigManager();
@@ -52,6 +53,16 @@ public class DragonHealthModifier extends AbstractEnderDragonTweaksListener {
                 healthToSet = health + Main.getStatisticsManager().getStatInt("dragonDeathCount") * modeValue;
                 break;
         }
+
+        // Keep health within game limits
+        if (healthToSet > MAX_DRAGON_HEALTH) {
+            Util.logWarning("Dragon health is set to " + healthToSet + " which exceeds the game maximum of " + MAX_DRAGON_HEALTH + ". Setting to " + MAX_DRAGON_HEALTH);
+            healthToSet = MAX_DRAGON_HEALTH;
+        } else if (healthToSet < 1) {
+            Util.logWarning("Dragon health is set to " + healthToSet + " which is less than 1. Setting to 1.");
+            healthToSet = 1;
+        }
+
         final EnderDragon dragon = (EnderDragon) event.getEntity();
         dragon.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(healthToSet);
         dragon.setHealth(healthToSet);
